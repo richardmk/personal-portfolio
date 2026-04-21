@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Richard Mejía - Machine Learning Engineer & Data Scientist">
+    <title>Richard Mejía | ML Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-wrapper">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <circle cx="4" cy="6" r="2"/>
+                        <circle cx="4" cy="18" r="2"/>
+                        <circle cx="20" cy="6" r="2"/>
+                        <circle cx="20" cy="18" r="2"/>
+                        <path d="M6 6L9.5 10.5M6 18L9.5 13.5M18 6L14.5 10.5M18 18L14.5 13.5"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">Richard M.</span>
+                    <span class="logo-role">ML Engineer</span>
+                </div>
+            </div>
+            <button class="close-btn" id="closeBtn" aria-label="Cerrar menú">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#inicio" class="nav-link active" data-section="inicio">
+                <span class="nav-number">01</span>
+                <span class="nav-text">Inicio</span>
+            </a>
+            <a href="#sobre-mi" class="nav-link" data-section="sobre-mi">
+                <span class="nav-number">02</span>
+                <span class="nav-text">Sobre mí</span>
+            </a>
+            <a href="#servicios" class="nav-link" data-section="servicios">
+                <span class="nav-number">03</span>
+                <span class="nav-text">Servicios</span>
+            </a>
+            <a href="#skills" class="nav-link" data-section="skills">
+                <span class="nav-number">04</span>
+                <span class="nav-text">Skills</span>
+            </a>
+            <a href="#experiencia" class="nav-link" data-section="experiencia">
+                <span class="nav-number">05</span>
+                <span class="nav-text">Experiencia</span>
+            </a>
+            <a href="#portafolio" class="nav-link" data-section="portafolio">
+                <span class="nav-number">06</span>
+                <span class="nav-text">Portafolio</span>
+            </a>
+            <a href="#contacto" class="nav-link" data-section="contacto">
+                <span class="nav-number">07</span>
+                <span class="nav-text">Contacto</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="social-links">
+                <a href="https://github.com" target="_blank" aria-label="GitHub" class="social-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn" class="social-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://kaggle.com" target="_blank" aria-label="Kaggle" class="social-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353C5.151.118 5.269 0 5.505 0h2.431c.234 0 .351.118.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.335"/></svg>
+                </a>
+                <a href="mailto:richard.mejia.k@gmail.com" aria-label="Email" class="social-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                </a>
+            </div>
+            <div class="availability">
+                <span class="status-dot"></span>
+                <span>Disponible para proyectos</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- INICIO -->
+        <section id="inicio" class="section section-hero active">
+            <div class="hero-bg">
+                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1920&q=80&auto=format" alt="" class="hero-bg-img">
+                <div class="hero-overlay"></div>
+            </div>
+            <div class="section-content">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        <span>Machine Learning Engineer</span>
+                    </div>
+                    <h1 class="hero-title">
+                        Hola, soy <span class="text-accent">Richard</span>
+                        <br>
+                        <span class="hero-subtitle-big">Construyendo el futuro con IA</span>
+                    </h1>
+                    <p class="hero-description">
+                        Transformo datos en soluciones inteligentes. Especializado en Machine Learning,
+                        Deep Learning y sistemas de IA escalables para resolver problemas reales.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span class="stat-number">5+</span>
+                            <span class="stat-label">Años de experiencia</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="stat-number">40+</span>
+                            <span class="stat-label">Proyectos ML</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="stat-number">15+</span>
+                            <span class="stat-label">Clientes felices</span>
+                        </div>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="#portafolio" class="btn btn-primary" data-nav="portafolio">
+                            <span>Ver proyectos</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                        <a href="#contacto" class="btn btn-secondary" data-nav="contacto">
+                            <span>Contactar</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>Scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- SOBRE MÍ -->
+        <section id="sobre-mi" class="section">
+            <div class="section-content">
+                <div class="section-header">
+                    <span class="section-number">02 —</span>
+                    <h2 class="section-title">Sobre mí</h2>
+                    <p class="section-subtitle">Conoce mi historia y enfoque profesional</p>
+                </div>
+                <div class="about-grid">
+                    <div class="about-image-wrapper">
+                        <div class="about-image-frame">
+                            <img src="https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=800&q=80&auto=format" alt="Richard Mejía" class="about-image">
+                            <div class="image-glow"></div>
+                        </div>
+                        <div class="about-experience">
+                            <span class="exp-years">5+</span>
+                            <span class="exp-text">años en<br>Machine Learning</span>
+                        </div>
+                    </div>
+                    <div class="about-content">
+                        <p class="about-lead">
+                            Soy un <strong>Machine Learning Engineer</strong> apasionado por transformar
+                            datos complejos en soluciones inteligentes y escalables.
+                        </p>
+                        <p>
+                            Mi trayectoria combina sólidos fundamentos matemáticos con experiencia práctica
+                            en el desarrollo de modelos de ML, sistemas de visión por computadora, procesamiento
+                            de lenguaje natural y arquitecturas de deep learning en producción.
+                        </p>
+                        <p>
+                            Trabajo en la intersección entre investigación y desarrollo, creando sistemas
+                            que aportan valor real a empresas y usuarios finales.
+                        </p>
+
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Nombre</span>
+                                <span class="info-value">Richard Mejía</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">richard.mejia.k@gmail.com</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Rol</span>
+                                <span class="info-value">ML Engineer</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Disponibilidad</span>
+                                <span class="info-value available">Abierto a proyectos</span>
+                            </div>
+                        </div>
+
+                        <div class="about-actions">
+                            <a href="#" class="btn btn-primary">
+                                <span>Descargar CV</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                            </a>
+                            <a href="#contacto" class="btn btn-ghost" data-nav="contacto">
+                                <span>Hablemos</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICIOS -->
+        <section id="servicios" class="section">
+            <div class="section-content">
+                <div class="section-header">
+                    <span class="section-number">03 —</span>
+                    <h2 class="section-title">¿Qué hago?</h2>
+                    <p class="section-subtitle">Soluciones de Machine Learning end-to-end</p>
+                </div>
+
+                <div class="services-grid">
+                    <article class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="3"/>
+                                <circle cx="4" cy="6" r="2"/>
+                                <circle cx="4" cy="18" r="2"/>
+                                <circle cx="20" cy="6" r="2"/>
+                                <circle cx="20" cy="18" r="2"/>
+                                <path d="M6 6L9.5 10.5M6 18L9.5 13.5M18 6L14.5 10.5M18 18L14.5 13.5"/>
+                            </svg>
+                        </div>
+                        <h3>Machine Learning</h3>
+                        <p>Diseño, entrenamiento y deployment de modelos de ML para clasificación, regresión, clustering y sistemas de recomendación.</p>
+                        <ul class="service-list">
+                            <li>Modelos supervisados y no supervisados</li>
+                            <li>Feature engineering avanzado</li>
+                            <li>AutoML y optimización</li>
+                        </ul>
+                    </article>
+
+                    <article class="service-card featured">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2a5 5 0 0 1 5 5v3a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5zM19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <path d="M12 19v4M8 23h8"/>
+                            </svg>
+                        </div>
+                        <div class="service-tag">Popular</div>
+                        <h3>Deep Learning</h3>
+                        <p>Arquitecturas avanzadas con redes neuronales: CNNs, RNNs, Transformers y modelos generativos para problemas complejos.</p>
+                        <ul class="service-list">
+                            <li>Redes neuronales profundas</li>
+                            <li>Transfer learning</li>
+                            <li>Modelos generativos (GANs, VAEs)</li>
+                        </ul>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="M21 15l-5-5L5 21"/>
+                            </svg>
+                        </div>
+                        <h3>Computer Vision</h3>
+                        <p>Sistemas de visión por computadora para detección, reconocimiento, segmentación y análisis de imágenes y video.</p>
+                        <ul class="service-list">
+                            <li>Detección de objetos (YOLO)</li>
+                            <li>Segmentación semántica</li>
+                            <li>OCR y análisis de video</li>
+                        </ul>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                        </div>
+                        <h3>NLP</h3>
+                        <p>Procesamiento de lenguaje natural con modelos modernos: LLMs, transformers, análisis semántico y chatbots inteligentes.</p>
+                        <ul class="service-list">
+                            <li>LLMs y fine-tuning</li>
+                            <li>Análisis de sentimientos</li>
+                            <li>Sistemas RAG</li>
+                        </ul>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2v20M2 12h20"/>
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                        </div>
+                        <h3>MLOps</h3>
+                        <p>Infraestructura para modelos en producción: CI/CD, monitoreo, versionado y despliegue escalable en la nube.</p>
+                        <ul class="service-list">
+                            <li>Pipelines automatizados</li>
+                            <li>Monitoreo de drift</li>
+                            <li>Deploy en Kubernetes/Cloud</li>
+                        </ul>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M3 3v18h18"/>
+                                <path d="M7 14l4-4 4 4 5-5"/>
+                            </svg>
+                        </div>
+                        <h3>Data Science</h3>
+                        <p>Análisis exploratorio, visualización, modelado estadístico y obtención de insights accionables desde los datos.</p>
+                        <ul class="service-list">
+                            <li>Análisis estadístico</li>
+                            <li>Visualización avanzada</li>
+                            <li>Data storytelling</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="section">
+            <div class="section-content">
+                <div class="section-header">
+                    <span class="section-number">04 —</span>
+                    <h2 class="section-title">Stack Tecnológico</h2>
+                    <p class="section-subtitle">Herramientas y tecnologías que utilizo a diario</p>
+                </div>
+
+                <div class="skills-container">
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">
+                            <span class="category-icon">{ }</span>
+                            Lenguajes
+                        </h3>
+                        <div class="skills-grid">
+                            <div class="skill-badge" data-level="95">
+                                <span class="skill-name">Python</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 95%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="85">
+                                <span class="skill-name">SQL</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="70">
+                                <span class="skill-name">R</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="75">
+                                <span class="skill-name">JavaScript</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 75%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">
+                            <span class="category-icon">◈</span>
+                            ML Frameworks
+                        </h3>
+                        <div class="skills-grid">
+                            <div class="skill-badge" data-level="92">
+                                <span class="skill-name">TensorFlow</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 92%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="90">
+                                <span class="skill-name">PyTorch</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="95">
+                                <span class="skill-name">Scikit-learn</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 95%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="80">
+                                <span class="skill-name">Keras</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="85">
+                                <span class="skill-name">Hugging Face</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">
+                            <span class="category-icon">△</span>
+                            Data & MLOps
+                        </h3>
+                        <div class="skills-grid">
+                            <div class="skill-badge" data-level="88">
+                                <span class="skill-name">Pandas</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 88%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="85">
+                                <span class="skill-name">NumPy</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="80">
+                                <span class="skill-name">Docker</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 80%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="75">
+                                <span class="skill-name">MLflow</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 75%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="70">
+                                <span class="skill-name">Airflow</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3 class="skill-category-title">
+                            <span class="category-icon">☁</span>
+                            Cloud
+                        </h3>
+                        <div class="skills-grid">
+                            <div class="skill-badge" data-level="82">
+                                <span class="skill-name">AWS</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 82%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="75">
+                                <span class="skill-name">GCP</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 75%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="70">
+                                <span class="skill-name">Azure ML</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 70%"></div></div>
+                            </div>
+                            <div class="skill-badge" data-level="78">
+                                <span class="skill-name">Kubernetes</span>
+                                <div class="skill-bar"><div class="skill-fill" style="width: 78%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCIA -->
+        <section id="experiencia" class="section">
+            <div class="section-content">
+                <div class="section-header">
+                    <span class="section-number">05 —</span>
+                    <h2 class="section-title">Experiencia</h2>
+                    <p class="section-subtitle">Mi trayectoria profesional</p>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <span class="timeline-date">2023 — Presente</span>
+                                <h3>Senior ML Engineer</h3>
+                                <span class="timeline-company">Tech Innovate Corp</span>
+                            </div>
+                            <p>Liderazgo técnico en el desarrollo de sistemas de IA a escala. Diseño de arquitecturas de deep learning para producción y mentoring del equipo de ML.</p>
+                            <div class="timeline-tags">
+                                <span class="mini-tag">PyTorch</span>
+                                <span class="mini-tag">AWS SageMaker</span>
+                                <span class="mini-tag">Kubernetes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <span class="timeline-date">2021 — 2023</span>
+                                <h3>Machine Learning Engineer</h3>
+                                <span class="timeline-company">Data Solutions Inc.</span>
+                            </div>
+                            <p>Desarrollo de modelos predictivos y sistemas de recomendación. Implementación de pipelines de MLOps y despliegue en la nube.</p>
+                            <div class="timeline-tags">
+                                <span class="mini-tag">TensorFlow</span>
+                                <span class="mini-tag">MLflow</span>
+                                <span class="mini-tag">GCP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <span class="timeline-date">2020 — 2021</span>
+                                <h3>Data Scientist</h3>
+                                <span class="timeline-company">Analytics Pro</span>
+                            </div>
+                            <p>Análisis de datos, modelado estadístico y creación de dashboards interactivos. Colaboración con equipos de producto para decisiones basadas en datos.</p>
+                            <div class="timeline-tags">
+                                <span class="mini-tag">Python</span>
+                                <span class="mini-tag">Scikit-learn</span>
+                                <span class="mini-tag">SQL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <span class="timeline-date">2019 — 2020</span>
+                                <h3>Junior Data Analyst</h3>
+                                <span class="timeline-company">StartUp Labs</span>
+                            </div>
+                            <p>Primeros pasos en el mundo de los datos. Análisis exploratorio, reportes ejecutivos y apoyo en proyectos de business intelligence.</p>
+                            <div class="timeline-tags">
+                                <span class="mini-tag">Python</span>
+                                <span class="mini-tag">Pandas</span>
+                                <span class="mini-tag">Tableau</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTAFOLIO -->
+        <section id="portafolio" class="section">
+            <div class="section-content">
+                <div class="section-header">
+                    <span class="section-number">06 —</span>
+                    <h2 class="section-title">Portafolio</h2>
+                    <p class="section-subtitle">Proyectos recientes en Machine Learning e IA</p>
+                </div>
+
+                <div class="projects-grid">
+                    <article class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80&auto=format" alt="Neural Network" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-action" aria-label="Ver proyecto">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </a>
+                                <a href="#" class="project-action" aria-label="Ver código">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <span class="project-category">Deep Learning</span>
+                            <h3>Image Classifier Pro</h3>
+                            <p>Sistema de clasificación de imágenes con CNN personalizada. 98% de precisión en dataset de 50K imágenes.</p>
+                            <div class="project-tags">
+                                <span class="tag">PyTorch</span>
+                                <span class="tag">CNN</span>
+                                <span class="tag">Transfer Learning</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80&auto=format" alt="NLP Code" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-action" aria-label="Ver proyecto">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </a>
+                                <a href="#" class="project-action" aria-label="Ver código">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <span class="project-category">NLP</span>
+                            <h3>Sentiment Analyzer</h3>
+                            <p>Análisis de sentimientos en redes sociales usando BERT. Procesamiento multiidioma en tiempo real.</p>
+                            <div class="project-tags">
+                                <span class="tag">BERT</span>
+                                <span class="tag">Hugging Face</span>
+                                <span class="tag">FastAPI</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format" alt="Data Dashboard" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-action" aria-label="Ver proyecto">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </a>
+                                <a href="#" class="project-action" aria-label="Ver código">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <span class="project-category">Data Science</span>
+                            <h3>Sales Forecast Engine</h3>
+                            <p>Motor predictivo de ventas con LSTM. Reducción del 35% en errores de inventario para retailer.</p>
+                            <div class="project-tags">
+                                <span class="tag">LSTM</span>
+                                <span class="tag">TensorFlow</span>
+                                <span class="tag">Time Series</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80&auto=format" alt="Computer Vision" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-action" aria-label="Ver proyecto">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </a>
+                                <a href="#" class="project-action" aria-label="Ver código">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <span class="project-category">Computer Vision</span>
+                            <h3>Object Detection API</h3>
+                            <p>API REST para detección de objetos en tiempo real con YOLOv8. Procesa 60 FPS en GPU.</p>
+                            <div class="project-tags">
+                                <span class="tag">YOLO</span>
+                                <span class="tag">OpenCV</span>
+                                <span class="tag">Docker</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&q=80&auto=format" alt="MLOps Pipeline" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-action" aria-label="Ver proyecto">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </a>
+                                <a href="#" class="project-action" aria-label="Ver código">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <span class="project-category">MLOps</span>
+                            <h3>ML Pipeline Platform</h3>
+                            <p>Plataforma de MLOps con CI/CD, monitoreo automático de drift y despliegue en Kubernetes.</p>
+                            <div class="project-tags">
+                                <span class="tag">Kubernetes</span>
+                                <span class="tag">MLflow</span>
+                                <span class="tag">Airflow</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80&auto=format" alt="LLM Chatbot" class="project-image">
+                            <div class="project-overlay">
+                                <a href="#" class="project-action" aria-label="Ver proyecto">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                </a>
+                                <a href="#" class="project-action" aria-label="Ver código">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <span class="project-category">LLM / AI</span>
+                            <h3>RAG Chatbot Enterprise</h3>
+                            <p>Sistema RAG personalizado para empresas. Integra documentación interna con LLMs para soporte inteligente.</p>
+                            <div class="project-tags">
+                                <span class="tag">LangChain</span>
+                                <span class="tag">OpenAI</span>
+                                <span class="tag">Vector DB</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTO -->
+        <section id="contacto" class="section">
+            <div class="section-content">
+                <div class="section-header">
+                    <span class="section-number">07 —</span>
+                    <h2 class="section-title">Hablemos</h2>
+                    <p class="section-subtitle">¿Tienes un proyecto en mente? Me encantaría escucharte</p>
+                </div>
+
+                <div class="contact-container">
+                    <div class="contact-info-panel">
+                        <h3>Información de contacto</h3>
+                        <p class="contact-intro">
+                            Estoy abierto a discutir proyectos de Machine Learning, colaboraciones
+                            o cualquier oportunidad interesante. Escríbeme.
+                        </p>
+
+                        <div class="contact-methods">
+                            <a href="mailto:richard.mejia.k@gmail.com" class="contact-method">
+                                <div class="contact-method-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                </div>
+                                <div>
+                                    <span class="contact-method-label">Email</span>
+                                    <span class="contact-method-value">richard.mejia.k@gmail.com</span>
+                                </div>
+                            </a>
+
+                            <div class="contact-method">
+                                <div class="contact-method-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                </div>
+                                <div>
+                                    <span class="contact-method-label">Ubicación</span>
+                                    <span class="contact-method-value">Disponible remoto mundial</span>
+                                </div>
+                            </div>
+
+                            <div class="contact-method">
+                                <div class="contact-method-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                </div>
+                                <div>
+                                    <span class="contact-method-label">Tiempo de respuesta</span>
+                                    <span class="contact-method-value">24 horas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-socials">
+                            <h4>Sígueme</h4>
+                            <div class="social-links">
+                                <a href="https://github.com" target="_blank" aria-label="GitHub" class="social-link">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                </a>
+                                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn" class="social-link">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                </a>
+                                <a href="https://kaggle.com" target="_blank" aria-label="Kaggle" class="social-link">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353C5.151.118 5.269 0 5.505 0h2.431c.234 0 .351.118.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.335"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre</label>
+                                <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Asunto</label>
+                            <input type="text" id="subject" name="subject" placeholder="¿De qué quieres hablar?" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Cuéntame sobre tu proyecto..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <span>Enviar mensaje</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">Richard Mejía</span>
+                    <span class="footer-tagline">ML Engineer & AI Developer</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#inicio" data-nav="inicio">Inicio</a>
+                    <a href="#sobre-mi" data-nav="sobre-mi">Sobre mí</a>
+                    <a href="#portafolio" data-nav="portafolio">Portafolio</a>
+                    <a href="#contacto" data-nav="contacto">Contacto</a>
+                </div>
+                <div class="footer-copy">
+                    <p>&copy; 2026 Richard Mejía. Construido con precisión.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
