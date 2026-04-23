@@ -988,20 +988,153 @@ body {
     border-radius: 50%;
 }
 
+.service-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+}
+
+.service-tech-tags span {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--primary-light);
+    background: var(--primary-soft);
+    border: 1px solid var(--border-accent);
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+}
+
+/* ============================================
+   SERVICES LIST
+   ============================================ */
+.services-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.service-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: var(--transition);
+}
+
+.service-item:first-child {
+    padding-top: 0;
+}
+
+.service-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.service-item:hover .service-item-icon {
+    border-color: var(--primary);
+    background: rgba(197, 48, 48, 0.12);
+    color: var(--primary-light);
+}
+
+.service-item:hover .service-item-body h3 {
+    color: var(--primary-light);
+}
+
+.service-item-icon {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    border: 1px solid var(--border-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.service-item-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.service-item-body h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: var(--transition);
+}
+
+.service-item-body p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.service-item-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+    background: var(--primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 100px;
+}
+
+/* ============================================
+   SERVICIOS + SKILLS — LAYOUT DOS COLUMNAS
+   ============================================ */
+.sv-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+.sv-col-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--primary-light);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.sv-skills {
+    position: sticky;
+    top: 2rem;
+}
+
 /* ============================================
    SKILLS SECTION
    ============================================ */
 .skills-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
 }
+
 
 .skill-category {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 2rem;
+    padding: 1.25rem 1.5rem;
 }
 
 .skill-category-title {
@@ -1521,7 +1654,7 @@ a.contact-method:hover {
 .footer {
     background: var(--bg-secondary);
     border-top: 1px solid var(--border);
-    padding: 3rem 3rem 2rem;
+    padding: 1.25rem 3rem;
     margin-top: 4rem;
 }
 
@@ -1556,23 +1689,6 @@ a.contact-method:hover {
     letter-spacing: 1px;
 }
 
-.footer-links {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.footer-links a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: var(--transition);
-}
-
-.footer-links a:hover {
-    color: var(--primary-light);
-}
-
 .footer-copy {
     color: var(--text-muted);
     font-size: 0.85rem;
@@ -1596,6 +1712,11 @@ a.contact-method:hover {
 
     .projects-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sv-layout {
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
     }
 
     .scroll-indicator {
@@ -1720,8 +1841,16 @@ a.contact-method:hover {
         grid-template-columns: 1fr;
     }
 
-    .skills-container {
+    .sv-layout {
         grid-template-columns: 1fr;
+    }
+
+    .sv-skills {
+        position: static;
+    }
+
+    .skills-container {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .info-grid {
@@ -1783,10 +1912,8 @@ a.contact-method:hover {
         gap: 1.5rem;
     }
 
-    .footer-links {
-        justify-content: center;
-    }
 }
+
 
 @media (max-width: 480px) {
     :root {

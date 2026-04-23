@@ -43,8 +43,8 @@ const navigateToSection = (sectionId) => {
     if (targetLink) targetLink.classList.add('active');
     if (targetSection) {
         targetSection.classList.add('active');
-        // Reanimar las skill bars si vamos a esa sección
-        if (sectionId === 'skills') {
+        // Reanimar las skill bars al entrar en la sección de servicios (donde viven ahora)
+        if (sectionId === 'habilidades') {
             const skillFills = targetSection.querySelectorAll('.skill-fill');
             skillFills.forEach(fill => {
                 const width = fill.style.width;
@@ -120,13 +120,12 @@ window.addEventListener('load', () => {
 });
 
 // ============================================
-// Agregar atributo data-level a skills (para mostrar %)
+// Formatear data-level de skills con símbolo %
 // ============================================
-document.querySelectorAll('.skill-badge').forEach(badge => {
-    const level = badge.getAttribute('data-level');
-    const nameEl = badge.querySelector('.skill-name');
-    if (level && nameEl) {
-        nameEl.setAttribute('data-level', `${level}%`);
+document.querySelectorAll('.skill-name[data-level]').forEach(nameEl => {
+    const raw = nameEl.getAttribute('data-level');
+    if (raw && !raw.includes('%')) {
+        nameEl.setAttribute('data-level', `${raw}%`);
     }
 });
 
