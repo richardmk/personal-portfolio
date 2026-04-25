@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub — Curso Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --warn: #d29922;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --easy: #56d364;
+    --medium: #e3b341;
+    --hard: #f78166;
+    --expert: #bc8cff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(121,192,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(121,192,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .topbar-left, .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .tb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    transition: color 0.15s;
+  }
+  .tb-link:hover { color: var(--accent2); }
+  .tb-link svg { width: 14px; height: 14px; }
+
+  .tb-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .tb-title .git { color: var(--accent); }
+  .tb-title .hub { color: var(--accent2); }
+
+  .tb-quiz {
+    background: var(--accent);
+    color: #0d1117;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .tb-quiz:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(247,129,102,0.35); }
+
+  /* ── LAYOUT ── */
+  .layout {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding: 32px 0;
+  }
+
+  .sb-section {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+  }
+
+  .sb-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 32px;
+  }
+
+  .sb-link {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sb-link:hover { color: var(--text); background: var(--surface); }
+  .sb-link.active {
+    color: var(--accent2);
+    background: rgba(121,192,255,0.08);
+    border-left-color: var(--accent2);
+  }
+
+  .sb-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.7;
+  }
+
+  .sb-quiz-cta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(247,129,102,0.12), rgba(247,129,102,0.04));
+    border: 1px solid rgba(247,129,102,0.3);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .sb-quiz-cta:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .sb-quiz-cta svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+  .sb-quiz-cta-label { font-size: 0.7rem; color: var(--muted); display: block; }
+  .sb-quiz-cta-title { font-size: 0.88rem; font-weight: 700; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 48px 0 96px;
+    max-width: 760px;
+  }
+
+  .hero {
+    margin-bottom: 64px;
+  }
+
+  .terminal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    margin-bottom: 24px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+
+  h1.hero-title {
+    font-size: clamp(1.85rem, 4vw, 3rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+  }
+  h1.hero-title .git { color: var(--accent); }
+  h1.hero-title .hub { color: var(--accent2); }
+  h1.hero-title .sub {
+    display: block;
+    color: var(--text);
+    font-size: 0.55em;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+
+  .hero-lead {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: 28px;
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .hs-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 22px;
+  }
+  .hs-card .num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent2);
+    line-height: 1;
+  }
+  .hs-card .lbl {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── MODULES ── */
+  .module {
+    margin-bottom: 80px;
+    scroll-margin-top: 80px;
+  }
+
+  .module-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .module-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent2);
+    background: rgba(121,192,255,0.08);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(121,192,255,0.2);
+  }
+
+  .module-level {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1.5px solid;
+  }
+  .lv-easy   { color: var(--easy);   border-color: var(--easy);   background: rgba(86,211,100,0.08); }
+  .lv-medium { color: var(--medium); border-color: var(--medium); background: rgba(227,179,65,0.08); }
+  .lv-hard   { color: var(--hard);   border-color: var(--hard);   background: rgba(247,129,102,0.08); }
+  .lv-expert { color: var(--expert); border-color: var(--expert); background: rgba(188,140,255,0.08); }
+
+  .module h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+  }
+
+  .module .lead {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .module h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin: 32px 0 10px;
+    line-height: 1.4;
+  }
+
+  .module h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 18px 0 8px;
+  }
+
+  .module p {
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    margin-bottom: 14px;
+  }
+
+  .module ul, .module ol {
+    margin: 12px 0 18px 22px;
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .module li { margin-bottom: 6px; }
+  .module li::marker { color: var(--accent2); }
+
+  /* Code */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    overflow-x: auto;
+    margin: 16px 0 22px;
+    position: relative;
+  }
+  pre::before {
+    content: '$';
+    position: absolute;
+    top: 18px;
+    left: 22px;
+    color: var(--accent3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text);
+    font-size: 0.85rem;
+    display: block;
+    padding-left: 18px;
+    white-space: pre;
+  }
+
+  /* Callouts */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--accent2); }
+  .callout.tip { border-left-color: var(--accent3); }
+  .callout.tip strong { color: var(--accent3); }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.warn strong { color: var(--warn); }
+
+  .quiz-hint {
+    background: linear-gradient(135deg, rgba(247,129,102,0.08), rgba(247,129,102,0.02));
+    border: 1px solid rgba(247,129,102,0.25);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .quiz-hint-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(247,129,102,0.18);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .quiz-hint strong { color: var(--accent); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.88rem;
+  }
+  th, td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  th {
+    background: var(--surface);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  td { background: var(--surface2); color: var(--text); }
+
+  /* Final CTA */
+  .final-cta {
+    background: linear-gradient(135deg, var(--surface), rgba(247,129,102,0.06));
+    border: 1px solid rgba(247,129,102,0.3);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 64px;
+  }
+  .final-cta h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .final-cta p {
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+  }
+  .btn-quiz {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 36px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(247,129,102,0.35);
+  }
+  .btn-quiz svg { width: 18px; height: 18px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .sidebar {
+      position: static;
+      height: auto;
+      padding: 20px 0;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sb-nav { flex-direction: row; flex-wrap: wrap; }
+    .sb-link { padding: 6px 10px; font-size: 0.78rem; border-left: none; border-bottom: 2px solid transparent; }
+    .sb-link.active { border-left: none; border-bottom-color: var(--accent2); }
+    .sb-quiz-cta { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 12px 16px; }
+    .tb-link span { display: none; }
+    .layout { padding: 0 16px; }
+    .module h2 { font-size: 1.5rem; }
+    .final-cta { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="aprendizaje.html" class="tb-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span>Centro de Aprendizaje</span>
+    </a>
+  </div>
+  <div class="tb-title"><span class="git">Git</span> &amp; <span class="hub">GitHub</span></div>
+  <div class="topbar-right">
+    <a href="git-github-quiz.html" class="tb-quiz">Tomar Quiz →</a>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sb-section">Contenido del curso</div>
+    <nav class="sb-nav">
+      <a href="#m1" class="sb-link active"><span class="sb-num">01</span><span>Fundamentos</span></a>
+      <a href="#m2" class="sb-link"><span class="sb-num">02</span><span>Ramas</span></a>
+      <a href="#m3" class="sb-link"><span class="sb-num">03</span><span>Trabajo con Remotos</span></a>
+      <a href="#m4" class="sb-link"><span class="sb-num">04</span><span>Merging &amp; Rebasing</span></a>
+      <a href="#m5" class="sb-link"><span class="sb-num">05</span><span>GitHub Workflow</span></a>
+      <a href="#m6" class="sb-link"><span class="sb-num">06</span><span>Comandos Avanzados</span></a>
+      <a href="#m7" class="sb-link"><span class="sb-num">07</span><span>Nivel Experto</span></a>
+    </nav>
+    <a href="git-github-quiz.html" class="sb-quiz-cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <div>
+        <span class="sb-quiz-cta-label">Cuando estés listo</span>
+        <span class="sb-quiz-cta-title">Toma el Quiz · 100 preg</span>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ═══ CONTENT ═══ -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="terminal-badge">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        &nbsp;course-git-github --modules=7
+      </div>
+      <h1 class="hero-title">
+        <span class="git">Git</span> &amp; <span class="hub">GitHub</span>
+        <span class="sub">Curso Completo</span>
+      </h1>
+      <p class="hero-lead">
+        Domina el control de versiones desde los fundamentos hasta los temas más avanzados.
+        Cada módulo está alineado con el cuestionario maestro de 100 preguntas para que valides
+        tu aprendizaje al finalizar.
+      </p>
+      <div class="hero-stats">
+        <div class="hs-card"><div class="num">7</div><div class="lbl">Módulos</div></div>
+        <div class="hs-card"><div class="num">~3h</div><div class="lbl">Lectura</div></div>
+        <div class="hs-card"><div class="num">100</div><div class="lbl">Preguntas</div></div>
+        <div class="hs-card"><div class="num">4</div><div class="lbl">Niveles</div></div>
+      </div>
+    </section>
+
+    <!-- ─── MÓDULO 1 ─── -->
+    <article class="module" id="m1">
+      <div class="module-meta">
+        <span class="module-num">Módulo 01</span>
+        <span class="module-level lv-easy">Fácil</span>
+      </div>
+      <h2>Fundamentos de Git</h2>
+      <p class="lead">Empieza por entender qué es Git, cómo se diferencia de otros sistemas de control de versiones y cuáles son los comandos del día a día.</p>
+
+      <h3>¿Qué es Git?</h3>
+      <p>Git es un sistema de control de versiones <strong>distribuido</strong>. Esto significa que cada desarrollador tiene una copia completa del historial del proyecto en su máquina, no solo un snapshot del estado actual. Esto permite trabajar offline, crear ramas locales sin afectar al equipo y tener redundancia natural.</p>
+
+      <div class="callout">
+        <strong>Distribuido vs centralizado:</strong> En sistemas centralizados (como SVN), existe un único servidor con el historial. En Git, cada clon es un repositorio completo.
+      </div>
+
+      <h3>Inicializar un repositorio</h3>
+      <p>Para convertir un directorio cualquiera en un repositorio Git:</p>
+      <pre><code>git init</code></pre>
+      <p>Este comando crea una carpeta oculta <code>.git</code> con toda la estructura interna del repositorio (objetos, refs, configuración).</p>
+
+      <h3>Configuración inicial</h3>
+      <p>Antes de hacer tu primer commit, configura tu identidad globalmente:</p>
+      <pre><code>git config --global user.name "Tu Nombre"
+git config --global user.email "tu@email.com"</code></pre>
+
+      <h3>Los estados de un archivo</h3>
+      <p>En Git, un archivo puede estar en uno de estos estados:</p>
+      <table>
+        <thead><tr><th>Estado</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><code>untracked</code></td><td>Git no lo conoce aún</td></tr>
+          <tr><td><code>unmodified</code></td><td>Sin cambios respecto al último commit</td></tr>
+          <tr><td><code>modified</code></td><td>Modificado pero no preparado</td></tr>
+          <tr><td><code>staged</code></td><td>Preparado para el próximo commit</td></tr>
+        </tbody>
+      </table>
+
+      <div class="quiz-hint">
+        <div class="quiz-hint-icon">?</div>
+        <div><strong>En el quiz:</strong> "Pushed" no es un estado interno de Git. Subir al remoto no cambia el estado del archivo, solo sincroniza el historial.</div>
+      </div>
+
+      <h3>El ciclo básico</h3>
+      <p>El flujo de trabajo más común consiste en cuatro pasos:</p>
+      <pre><code>git status                    # qué cambió
+git add archivo.py            # preparar para commit
+git commit -m "feat: ..."     # confirmar
+git log                       # revisar historial</code></pre>
+
+      <h4>Variantes útiles de <code>git add</code>:</h4>
+      <ul>
+        <li><code>git add .</code> — agrega todos los cambios del directorio actual</li>
+        <li><code>git add --all</code> — agrega todos los cambios del repo (incluye eliminaciones)</li>
+        <li><code>git add -u</code> — solo archivos ya rastreados</li>
+        <li><code>git add -p</code> — interactivo, agrega cambios por trozos (hunks)</li>
+      </ul>
+
+      <h3>Ver diferencias</h3>
+      <pre><code>git diff              # working tree vs staging
+git diff --staged     # staging vs último commit
+git diff HEAD         # working tree vs último commit</code></pre>
+
+      <h3>Ignorar archivos: <code>.gitignore</code></h3>
+      <p>Crea un archivo <code>.gitignore</code> en la raíz del repositorio con los patrones que Git debe omitir:</p>
+      <pre><code>node_modules/
+.env
+*.log
+__pycache__/
+.DS_Store</code></pre>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> Si un archivo ya estaba rastreado antes de añadirlo a <code>.gitignore</code>, debes eliminarlo del índice con <code>git rm --cached archivo</code>.
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 2 ─── -->
+    <article class="module" id="m2">
+      <div class="module-meta">
+        <span class="module-num">Módulo 02</span>
+        <span class="module-level lv-easy">Fácil</span>
+      </div>
+      <h2>Ramas (Branches)</h2>
+      <p class="lead">Las ramas son lo que hace a Git tan poderoso. Aprende qué son realmente y cómo trabajar con ellas eficientemente.</p>
+
+      <h3>¿Qué es una rama?</h3>
+      <p>Una rama en Git es simplemente <strong>un puntero móvil que apunta a un commit</strong>. No es una copia del código, no es un directorio: es un archivo de 41 bytes que contiene el hash SHA-1 del último commit de esa línea de desarrollo.</p>
+      <p>Esto explica por qué crear y cambiar ramas en Git es prácticamente instantáneo, incluso en repositorios gigantes.</p>
+
+      <h3>Listar ramas</h3>
+      <pre><code>git branch          # ramas locales
+git branch -a       # locales + remotas
+git branch -r       # solo remotas
+git branch -v       # con el último commit de cada una</code></pre>
+
+      <h3>Crear y cambiar de rama</h3>
+      <p>Hay dos formas equivalentes:</p>
+      <pre><code># Forma clásica (cualquier versión de Git)
+git checkout -b feature-login
+
+# Forma moderna (Git 2.23+)
+git switch -c feature-login</code></pre>
+
+      <div class="callout">
+        <strong>checkout vs switch:</strong> Desde Git 2.23 se introdujo <code>git switch</code> (solo para ramas) y <code>git restore</code> (solo para archivos), separando las dos responsabilidades de <code>checkout</code>.
+      </div>
+
+      <h3>Cambiar de rama existente</h3>
+      <pre><code>git switch main
+git checkout main         # equivalente</code></pre>
+
+      <h3>Eliminar ramas</h3>
+      <pre><code>git branch -d feature-login   # solo si está fusionada
+git branch -D feature-login   # forzar eliminación</code></pre>
+
+      <div class="callout warn">
+        <strong>Cuidado:</strong> <code>-D</code> elimina la rama incluso si tiene commits que no están en otra parte. Si no estaban en remoto, esos commits se pierden (aunque <code>git reflog</code> puede ayudar a recuperarlos).
+      </div>
+
+      <h3>Renombrar la rama actual</h3>
+      <pre><code>git branch -m nuevo-nombre</code></pre>
+
+      <div class="quiz-hint">
+        <div class="quiz-hint-icon">?</div>
+        <div><strong>En el quiz:</strong> Una rama es un puntero móvil — Verdadero. Es uno de los conceptos fundamentales que diferencia a Git de otros VCS.</div>
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 3 ─── -->
+    <article class="module" id="m3">
+      <div class="module-meta">
+        <span class="module-num">Módulo 03</span>
+        <span class="module-level lv-easy">Fácil</span>
+      </div>
+      <h2>Trabajo con Remotos</h2>
+      <p class="lead">Los repositorios remotos son la base del trabajo colaborativo. Aprende a sincronizarte con ellos sin perder cambios en el camino.</p>
+
+      <h3>Clonar un repositorio</h3>
+      <pre><code>git clone https://github.com/usuario/repo.git</code></pre>
+      <p>Esto descarga el repositorio completo, incluyendo todo el historial de commits, todas las ramas remotas y la configuración de origen.</p>
+
+      <h3>Ver y gestionar remotos</h3>
+      <pre><code>git remote -v                              # listar remotos con URLs
+git remote add origin URL                  # añadir remoto
+git remote remove origin                   # quitar remoto
+git remote set-url origin nueva-url        # cambiar URL</code></pre>
+
+      <h3>Sincronizar: fetch vs pull</h3>
+      <table>
+        <thead><tr><th>Comando</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>git fetch</code></td><td>Descarga referencias remotas SIN modificar el working tree</td></tr>
+          <tr><td><code>git pull</code></td><td><code>fetch</code> + <code>merge</code> automático</td></tr>
+          <tr><td><code>git pull --rebase</code></td><td><code>fetch</code> + <code>rebase</code> (historial lineal)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <strong>Tip profesional:</strong> Usar <code>git fetch</code> antes de cualquier operación importante te permite ver qué cambió en el remoto sin sorpresas. Es la operación más segura para sincronizar.
+      </div>
+
+      <h3>Empujar cambios</h3>
+      <pre><code>git push                          # push a la rama tracked
+git push origin feature-login     # especificar remoto y rama
+git push -u origin feature-login  # primera vez, establece tracking</code></pre>
+
+      <h3>main vs master</h3>
+      <p>En octubre de 2020, GitHub cambió el nombre por defecto de la rama principal de <code>master</code> a <code>main</code> en todos los repositorios nuevos. Es una buena práctica adoptar este cambio en proyectos nuevos.</p>
+
+      <div class="quiz-hint">
+        <div class="quiz-hint-icon">?</div>
+        <div><strong>En el quiz:</strong> La diferencia clave entre <code>fetch</code> y <code>pull</code>: <code>fetch</code> solo descarga, no modifica nada de tu trabajo actual. <code>pull</code> descarga y fusiona automáticamente.</div>
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 4 ─── -->
+    <article class="module" id="m4">
+      <div class="module-meta">
+        <span class="module-num">Módulo 04</span>
+        <span class="module-level lv-medium">Medio</span>
+      </div>
+      <h2>Merging &amp; Rebasing</h2>
+      <p class="lead">Integrar trabajo de varias ramas es donde Git muestra su verdadero poder. Aprende cuándo usar merge, cuándo rebase y cómo resolver conflictos sin pánico.</p>
+
+      <h3>git merge</h3>
+      <p>Combina los cambios de una rama en otra. Hay dos escenarios principales:</p>
+
+      <h4>Fast-forward</h4>
+      <p>Si la rama destino no tiene commits nuevos desde que se creó la rama feature, Git simplemente mueve el puntero hacia adelante. <strong>No crea un commit de merge.</strong></p>
+      <pre><code>git switch main
+git merge feature-login   # fast-forward si es posible</code></pre>
+
+      <h4>Merge commit</h4>
+      <p>Si ambas ramas tienen commits nuevos, Git crea un commit especial con dos padres que registra la fusión.</p>
+      <pre><code>git merge --no-ff feature-login   # forzar merge commit aunque sea ff</code></pre>
+
+      <div class="callout">
+        <strong>Estrategias de merge en Git:</strong> <code>recursive</code> (default), <code>ours</code>, <code>theirs</code>, <code>octopus</code> (para fusionar más de 2 ramas), <code>resolve</code>, <code>subtree</code>. <code>cherry-pick</code> NO es una estrategia de merge — es un comando aparte.
+      </div>
+
+      <h3>git rebase</h3>
+      <p>Rebase "reescribe" la historia de tu rama colocando tus commits sobre la punta de otra rama, generando nuevos SHA-1 para cada commit movido.</p>
+      <pre><code>git switch feature-login
+git rebase main</code></pre>
+
+      <p>El resultado es un historial <strong>lineal</strong>, sin merge commits, como si hubieras desarrollado feature-login partiendo de la última versión de main.</p>
+
+      <div class="callout warn">
+        <strong>Regla de oro del rebase:</strong> nunca hagas rebase de commits que ya hayan sido empujados a una rama compartida. Reescribir historial público causa caos en el equipo.
+      </div>
+
+      <h3>pull --rebase</h3>
+      <p>Una mejor alternativa a <code>git pull</code> en muchos casos:</p>
+      <pre><code>git pull --rebase   # fetch + rebase, historial lineal</code></pre>
+      <p>Tus commits locales se aplican <em>encima</em> de los nuevos del remoto, evitando merge commits innecesarios cuando solo querías sincronizar.</p>
+
+      <h3>Resolución de conflictos</h3>
+      <p>Cuando Git no puede fusionar automáticamente, marca el conflicto en el archivo:</p>
+      <pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+versión actual de tu rama
+=======
+versión que viene de la otra rama
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-login</code></pre>
+
+      <p>Pasos para resolver:</p>
+      <ol>
+        <li>Editar el archivo: dejar la versión correcta (puede ser una mezcla de ambas)</li>
+        <li>Eliminar los marcadores <code>&lt;&lt;&lt;</code>, <code>===</code>, <code>&gt;&gt;&gt;</code></li>
+        <li><code>git add archivo</code> para marcar como resuelto</li>
+        <li><code>git commit</code> (en merge) o <code>git rebase --continue</code> (en rebase)</li>
+      </ol>
+
+      <p>Si te arrepientes a mitad de una operación:</p>
+      <pre><code>git merge --abort
+git rebase --abort</code></pre>
+
+      <h3>Three-way merge: cómo funciona internamente</h3>
+      <p>Cuando dos ramas divergieron, Git encuentra el <strong>LCA (Lowest Common Ancestor)</strong> — el commit más reciente que ambas comparten. Compara cada rama con ese ancestro y combina automáticamente los cambios que no se solapen.</p>
+      <p>Solo aparece un conflicto cuando ambas ramas modificaron <em>la misma línea</em> del mismo archivo de forma diferente respecto al ancestro común.</p>
+
+      <div class="callout">
+        <strong>Estrategia "ort":</strong> Desde Git 2.33 la estrategia por defecto es <code>ort</code> (Ostensibly Recursive's Twin), que reemplazó a <code>recursive</code>. Es más rápida y maneja mejor renames y casos borde.
+      </div>
+
+      <h3>Rebase interactivo (<code>git rebase -i</code>)</h3>
+      <p>Permite reescribir el historial commit por commit. Al ejecutarlo, Git abre un editor con la lista de commits y un comando para cada uno:</p>
+      <pre><code>git rebase -i HEAD~4</code></pre>
+
+      <table>
+        <thead><tr><th>Comando</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr><td><code>pick</code></td><td>Mantiene el commit tal cual</td></tr>
+          <tr><td><code>reword</code></td><td>Mantiene los cambios pero edita el mensaje</td></tr>
+          <tr><td><code>edit</code></td><td>Pausa para modificar el commit</td></tr>
+          <tr><td><code>squash</code></td><td>Combina con el anterior, fusiona mensajes</td></tr>
+          <tr><td><code>fixup</code></td><td>Como squash pero <strong>descarta el mensaje</strong></td></tr>
+          <tr><td><code>drop</code></td><td>Elimina el commit completo</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Push forzado seguro: <code>--force-with-lease</code></h3>
+      <p>Si reescribes commits ya empujados (con rebase o amend), necesitas forzar el push. Pero <code>--force</code> puede sobrescribir trabajo ajeno sin avisar. La alternativa segura:</p>
+      <pre><code>git push --force-with-lease</code></pre>
+      <p>Solo fuerza el push <strong>si nadie más ha empujado</strong> a esa rama desde tu último fetch. Si alguien lo hizo, falla y te protege.</p>
+
+      <div class="callout warn">
+        <strong>Regla:</strong> usa <code>--force-with-lease</code> en lugar de <code>--force</code> siempre que puedas. Solo recurre a <code>--force</code> cuando sepas exactamente lo que hace el comando.
+      </div>
+
+      <div class="quiz-hint">
+        <div class="quiz-hint-icon">?</div>
+        <div><strong>En el quiz:</strong> Recuerda que <code>git merge</code> NO siempre crea un merge commit — si es fast-forward, solo mueve el puntero. Para forzar el commit usa <code>--no-ff</code>.</div>
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 5 ─── -->
+    <article class="module" id="m5">
+      <div class="module-meta">
+        <span class="module-num">Módulo 05</span>
+        <span class="module-level lv-medium">Medio</span>
+      </div>
+      <h2>GitHub Workflow</h2>
+      <p class="lead">GitHub añade una capa de colaboración sobre Git. Conoce los conceptos esenciales para trabajar profesionalmente en equipo.</p>
+
+      <h3>Forks</h3>
+      <p>Un <strong>fork</strong> es una copia personal de un repositorio ajeno en tu cuenta de GitHub. Te permite experimentar libremente sin afectar el original. El flujo típico:</p>
+      <ol>
+        <li>Hacer fork del repo en GitHub</li>
+        <li>Clonar tu fork localmente</li>
+        <li>Crear una rama, hacer cambios, push a tu fork</li>
+        <li>Abrir un Pull Request al repo original</li>
+      </ol>
+
+      <h3>Pull Requests</h3>
+      <p>Un <strong>Pull Request (PR)</strong> es la solicitud formal para integrar cambios de una rama a otra (o de un fork al repo original). En GitLab se llama Merge Request (MR), pero el concepto es idéntico.</p>
+
+      <p>Un buen PR incluye:</p>
+      <ul>
+        <li>Título descriptivo y conciso</li>
+        <li>Descripción del problema y la solución</li>
+        <li>Capturas o ejemplos cuando aplique</li>
+        <li>Checklist de testing</li>
+        <li>Referencias a issues relacionados</li>
+      </ul>
+
+      <h3>Code Review</h3>
+      <p>GitHub permite comentar línea por línea, sugerir cambios directamente con <em>suggested changes</em> y aprobar o solicitar cambios formalmente. Es la herramienta principal para garantizar calidad en equipo.</p>
+
+      <h3>README.md</h3>
+      <p>GitHub renderiza automáticamente el archivo <code>README.md</code> de la raíz como página de presentación del repositorio. Un buen README incluye:</p>
+      <ul>
+        <li>Descripción del proyecto</li>
+        <li>Instalación y dependencias</li>
+        <li>Ejemplos de uso</li>
+        <li>Cómo contribuir</li>
+        <li>Licencia</li>
+      </ul>
+
+      <h3>Issues, Labels y Milestones</h3>
+      <p>GitHub ofrece un sistema integrado de tracking:</p>
+      <ul>
+        <li><strong>Issues:</strong> bugs, features y discusiones</li>
+        <li><strong>Labels:</strong> categorización (bug, enhancement, good-first-issue)</li>
+        <li><strong>Milestones:</strong> agrupar issues hacia un objetivo concreto</li>
+        <li><strong>Projects:</strong> tableros tipo Kanban</li>
+      </ul>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> Vincula commits con issues escribiendo <code>Closes #42</code> en el mensaje del commit. Cuando el PR se fusione, GitHub cerrará automáticamente el issue #42.
+      </div>
+
+      <h3>Estrategias de merge en Pull Requests</h3>
+      <p>GitHub ofrece tres formas de integrar un PR:</p>
+      <table>
+        <thead><tr><th>Estrategia</th><th>Resultado en main</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Create a merge commit</strong></td><td>Conserva todos los commits + un merge commit</td></tr>
+          <tr><td><strong>Squash and merge</strong></td><td>Combina todos los commits del PR en uno solo</td></tr>
+          <tr><td><strong>Rebase and merge</strong></td><td>Aplica los commits en main sin merge commit (lineal)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Squash and merge</strong> es la opción más popular en equipos modernos: produce un historial limpio en main donde cada commit corresponde a una feature.</p>
+
+      <h3>Plantillas de Pull Request e Issues</h3>
+      <p>Para que cada PR tenga estructura consistente, crea <code>.github/PULL_REQUEST_TEMPLATE.md</code>:</p>
+      <pre><code>## Descripción
+&lt;!-- ¿Qué hace este PR? --&gt;
+
+## Tipo de cambio
+- [ ] Bug fix
+- [ ] Feature
+- [ ] Refactor
+
+## Checklist
+- [ ] Tests añadidos
+- [ ] Docs actualizadas</code></pre>
+      <p>Equivalente para issues: <code>.github/ISSUE_TEMPLATE/bug.md</code> y <code>feature.md</code>.</p>
+
+      <h3>CODEOWNERS — revisores automáticos</h3>
+      <p>El archivo <code>.github/CODEOWNERS</code> asigna propietarios por path. GitHub los añade como reviewers automáticos en cada PR que toque sus archivos:</p>
+      <pre><code># Propietarios globales
+*           @equipo-arquitectura
+
+# Frontend
+/src/web/   @ana @luis
+
+# Backend
+/api/       @backend-team
+
+# Docs
+*.md        @docs-team</code></pre>
+
+      <h3>Permisos de colaborador</h3>
+      <p>GitHub define 5 niveles de permisos para repositorios:</p>
+      <table>
+        <thead><tr><th>Permiso</th><th>Capacidades</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Read</strong></td><td>Solo lectura, clonar, abrir issues</td></tr>
+          <tr><td><strong>Triage</strong></td><td>Read + gestionar issues y PRs (sin commit)</td></tr>
+          <tr><td><strong>Write</strong></td><td>Triage + push a ramas, gestionar releases</td></tr>
+          <tr><td><strong>Maintain</strong></td><td>Write + gestionar configuración del repo (sin acciones destructivas)</td></tr>
+          <tr><td><strong>Admin</strong></td><td>Control total: settings, eliminar repo, gestionar accesos</td></tr>
+        </tbody>
+      </table>
+
+      <h3>GitHub Environments</h3>
+      <p>Los <strong>Environments</strong> son entornos lógicos de despliegue (production, staging, dev) con sus propias reglas:</p>
+      <ul>
+        <li><strong>Required reviewers:</strong> aprobación manual antes del deploy</li>
+        <li><strong>Wait timer:</strong> retraso configurable</li>
+        <li><strong>Branch restrictions:</strong> solo ciertas ramas pueden desplegar</li>
+        <li><strong>Secrets propios:</strong> credenciales aisladas por entorno</li>
+      </ul>
+
+      <h3>GitHub Packages</h3>
+      <p>Registro de paquetes integrado en GitHub. Soporta múltiples ecosistemas: npm, Maven, RubyGems, Docker, NuGet. La autenticación usa el mismo token de GitHub.</p>
+      <pre><code>npm publish --registry https://npm.pkg.github.com</code></pre>
+
+      <h3>GitHub Codespaces</h3>
+      <p>Entornos de desarrollo en la nube basados en VS Code. La configuración vive en <code>.devcontainer/devcontainer.json</code>:</p>
+      <pre><code>{
+  "name": "Mi proyecto",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": { "ghcr.io/devcontainers/features/node:1": {} },
+  "extensions": ["ms-python.python", "ms-toolsai.jupyter"],
+  "postCreateCommand": "pip install -r requirements.txt"
+}</code></pre>
+      <p>Cualquier colaborador puede abrir el repo en un Codespace y tener exactamente el mismo entorno preconfigurado, sin instalar nada localmente.</p>
+    </article>
+
+    <!-- ─── MÓDULO 6 ─── -->
+    <article class="module" id="m6">
+      <div class="module-meta">
+        <span class="module-num">Módulo 06</span>
+        <span class="module-level lv-hard">Difícil</span>
+      </div>
+      <h2>Comandos Avanzados</h2>
+      <p class="lead">Los comandos que diferencian a un usuario casual de uno profesional. Aprende a recuperar trabajo perdido, mover commits con precisión y manipular la historia.</p>
+
+      <h3>git stash — guardar trabajo en progreso</h3>
+      <p>Cuando necesitas cambiar de rama pero tienes cambios sin commitear:</p>
+      <pre><code>git stash                          # guarda y limpia el working tree
+git stash push -m "wip: feature"   # con mensaje
+git stash list                     # ver stashes guardados
+git stash pop                      # aplica y elimina el último
+git stash apply stash@{2}          # aplica uno específico
+git stash drop stash@{0}           # elimina uno específico</code></pre>
+
+      <h3>git cherry-pick — copiar commits específicos</h3>
+      <p>Aplica un commit existente sobre la rama actual:</p>
+      <pre><code>git cherry-pick abc1234            # un commit
+git cherry-pick abc1234..def5678   # un rango</code></pre>
+      <p>Útil cuando necesitas un fix específico de otra rama sin fusionarla completa.</p>
+
+      <h3>git reset — mover el puntero</h3>
+      <p>Cambia a qué commit apunta la rama actual. Tiene tres modos:</p>
+      <table>
+        <thead><tr><th>Modo</th><th>Working tree</th><th>Staging</th><th>HEAD</th></tr></thead>
+        <tbody>
+          <tr><td><code>--soft</code></td><td>Sin cambios</td><td>Sin cambios</td><td>Movido</td></tr>
+          <tr><td><code>--mixed</code> (default)</td><td>Sin cambios</td><td>Reset</td><td>Movido</td></tr>
+          <tr><td><code>--hard</code></td><td>Reset</td><td>Reset</td><td>Movido</td></tr>
+        </tbody>
+      </table>
+      <pre><code>git reset --soft HEAD~1    # deshace el último commit, mantiene cambios staged
+git reset HEAD~1            # deshace y unstaged
+git reset --hard HEAD~1     # destruye el último commit completo</code></pre>
+
+      <div class="callout warn">
+        <strong>Peligro:</strong> <code>--hard</code> es destructivo. Si los commits no están en remoto y no hay reflog reciente, los pierdes.
+      </div>
+
+      <h3>git revert — deshacer sin reescribir</h3>
+      <p>Crea un nuevo commit que revierte los cambios de un commit anterior. Es la forma <em>segura</em> de "deshacer" en una rama compartida porque no reescribe el historial.</p>
+      <pre><code>git revert abc1234</code></pre>
+
+      <h3>git reflog — el seguro de Git</h3>
+      <p>Git mantiene un log de cada cambio de HEAD durante 90 días por defecto. Si "perdiste" commits con un reset --hard o branch -D:</p>
+      <pre><code>git reflog
+# 1a2b3c4 HEAD@{2}: commit: feature en progreso
+# 9z8y7x6 HEAD@{3}: reset: moving to HEAD~1
+
+git reset --hard HEAD@{2}    # recuperar</code></pre>
+
+      <h3>Repositorio bare</h3>
+      <p>Un repo <em>bare</em> no tiene working directory — solo los datos de Git. Se usa típicamente como repositorio central en servidores. Las URLs que terminan en <code>.git</code> suelen ser bare.</p>
+      <pre><code>git init --bare proyecto.git
+git clone --bare repo proyecto.git</code></pre>
+
+      <h3>Detached HEAD</h3>
+      <p>Cuando haces <code>git checkout &lt;hash&gt;</code> en lugar de a una rama, HEAD apunta directamente a un commit. Es el estado "detached HEAD". Cualquier commit nuevo no pertenecerá a ninguna rama y se puede perder.</p>
+      <pre><code>git checkout abc1234         # detached HEAD
+git switch -c nueva-rama     # rescatar creando rama desde aquí</code></pre>
+
+      <h3>Tags: marcar versiones</h3>
+      <p>Hay dos tipos:</p>
+      <ul>
+        <li><strong>Lightweight:</strong> solo un puntero a un commit</li>
+        <li><strong>Annotated:</strong> objeto Git completo con autor, fecha, mensaje y firma opcional</li>
+      </ul>
+      <pre><code>git tag v1.0                              # lightweight
+git tag -a v1.0 -m "Release 1.0"          # annotated (recomendado)
+git push origin v1.0                       # subir el tag
+git push origin --tags                     # subir todos los tags</code></pre>
+
+      <h3>Firmar commits con GPG</h3>
+      <p>Para producir commits criptográficamente verificables (GitHub muestra badge "Verified"):</p>
+      <pre><code>git commit -S -m "feat: ..."   # firma con clave GPG configurada
+git config commit.gpgsign true # firmar siempre por defecto</code></pre>
+
+      <h3>Inspeccionar el log con flags útiles</h3>
+      <pre><code>git log --oneline                          # una línea por commit
+git log --oneline --graph --all            # árbol visual de todas las ramas
+git log --author="Ana"                     # filtrar por autor
+git log --since="2 weeks ago"              # últimas 2 semanas
+git log --grep="bug"                       # buscar en mensajes
+git log -p archivo.py                      # mostrar diffs de un archivo</code></pre>
+
+      <h3>Comparar ramas y archivos</h3>
+      <pre><code>git diff main..feature          # cambios en feature que no están en main
+git diff main...feature         # cambios desde el ancestro común
+git diff HEAD~3 HEAD            # comparar dos commits cualesquiera
+git diff --stat                 # resumen estadístico</code></pre>
+
+      <h3>Descartar cambios locales</h3>
+      <pre><code>git checkout -- archivo.txt    # descartar cambios (Git &lt; 2.23)
+git restore archivo.txt        # alternativa moderna (Git 2.23+)
+git restore --staged archivo   # quitar del staging area</code></pre>
+
+      <h3>Limpiar referencias remotas obsoletas</h3>
+      <pre><code>git fetch --prune              # elimina refs remotas que ya no existen
+git remote prune origin        # equivalente</code></pre>
+
+      <h3>Eliminar ramas remotas</h3>
+      <pre><code>git push origin --delete feature   # forma moderna (recomendada)
+git push origin :feature           # sintaxis clásica equivalente</code></pre>
+
+      <h3>git bisect — encontrar el commit que rompió algo</h3>
+      <p>Búsqueda binaria automatizada para localizar la regresión:</p>
+      <pre><code>git bisect start
+git bisect bad                  # el commit actual está roto
+git bisect good v1.0            # esta versión funcionaba
+# Git hace checkout al punto medio. Pruebas y marcas:
+git bisect good                 # o git bisect bad
+# ...repetir hasta que Git encuentre el commit culpable
+git bisect reset                # finalizar</code></pre>
+
+      <h3>Tracking de ramas remotas</h3>
+      <pre><code>git branch -vv                  # muestra qué rama remota trackea cada local
+git branch --set-upstream-to=origin/main main</code></pre>
+
+      <h3>Shallow clone — historial mínimo</h3>
+      <p>Para CI/CD donde el historial completo no importa:</p>
+      <pre><code>git clone --depth=1 URL         # solo el último commit
+git fetch --unshallow           # convertir a clone completo si lo necesitas</code></pre>
+
+      <h3>Inspeccionar objetos Git</h3>
+      <pre><code>git cat-file -t &lt;hash&gt;          # tipo del objeto (blob/tree/commit/tag)
+git cat-file -p &lt;hash&gt;          # contenido del objeto
+git ls-tree HEAD                # listar contenido del tree del último commit</code></pre>
+
+      <h3>Mantenimiento del repositorio</h3>
+      <pre><code>git gc                          # garbage collection: compacta objetos
+git gc --aggressive             # más lento, pero comprime mejor
+git fsck                        # verifica integridad de objetos</code></pre>
+
+      <div class="callout">
+        <strong>.git/packed-refs:</strong> Cuando un repo tiene muchas ramas/tags, Git agrupa esas referencias en un único archivo <code>packed-refs</code> para mejor rendimiento, en lugar de tener miles de archivos pequeños en <code>.git/refs/</code>.
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 7 ─── -->
+    <article class="module" id="m7">
+      <div class="module-meta">
+        <span class="module-num">Módulo 07</span>
+        <span class="module-level lv-expert">Experto</span>
+      </div>
+      <h2>Nivel Experto</h2>
+      <p class="lead">Los temas que aparecen en entrevistas senior y en arquitecturas de equipos grandes. No necesitas dominarlos para usar Git, pero sí para destacar.</p>
+
+      <h3>Git object model: el modelo de objetos</h3>
+      <p>El <strong>Git object model</strong> es la base de todo el sistema. Git almacena cuatro tipos de objetos, todos inmutables y identificados por su hash SHA-1:</p>
+      <ul>
+        <li><strong>blob:</strong> contenido de un archivo</li>
+        <li><strong>tree:</strong> directorio (lista de blobs y otros trees)</li>
+        <li><strong>commit:</strong> snapshot que apunta a un tree + metadatos + padres</li>
+        <li><strong>tag:</strong> referencia anotada a un commit (annotated tag)</li>
+      </ul>
+      <p>Las <strong>ramas no son objetos</strong> — son simplemente referencias (refs) que apuntan a un commit.</p>
+      <p>Todo el repositorio forma un <strong>DAG (Directed Acyclic Graph)</strong>: los commits apuntan a trees y a sus padres, los trees apuntan a blobs y otros trees. Cada objeto vive en <code>.git/objects/</code>.</p>
+
+      <h3>Refs especiales: ORIG_HEAD, MERGE_HEAD, CHERRY_PICK_HEAD</h3>
+      <p>Git mantiene refs temporales durante operaciones complejas:</p>
+      <ul>
+        <li><code>ORIG_HEAD</code> — guarda HEAD antes de operaciones potencialmente peligrosas (reset, merge). Para deshacer: <code>git reset ORIG_HEAD</code></li>
+        <li><code>MERGE_HEAD</code> — apunta al commit de la rama que se está fusionando (mientras hay un merge en curso)</li>
+        <li><code>CHERRY_PICK_HEAD</code> — apunta al commit que se está cherry-pickeando</li>
+      </ul>
+
+      <h3>Comandos que reescriben historial</h3>
+      <p>Los siguientes comandos modifican o eliminan commits existentes:</p>
+      <ul>
+        <li><code>git rebase</code> — mueve commits, generando nuevos SHAs</li>
+        <li><code>git commit --amend</code> — modifica el último commit</li>
+        <li><code>git reset --hard</code> — elimina commits del historial</li>
+        <li><code>git filter-branch</code> / <code>git-filter-repo</code> — reescribe completamente</li>
+      </ul>
+      <p><code>git revert</code> NO reescribe historial: crea un nuevo commit que invierte los cambios.</p>
+
+      <div class="callout warn">
+        <strong>Regla de oro:</strong> nunca reescribas historial que ya fue empujado a una rama compartida. Las nuevas refs no coincidirán con las que tienen los demás.
+      </div>
+
+      <h3>git fsck — verificar integridad</h3>
+      <pre><code>git fsck                    # verifica todos los objetos
+git fsck --lost-found       # encuentra objetos huérfanos recuperables</code></pre>
+
+      <h3>git rerere — REuse REcorded REsolution</h3>
+      <p>Si activas rerere, Git memoriza cómo resolviste cada conflicto y aplica la misma resolución automáticamente la próxima vez que aparezca:</p>
+      <pre><code>git config --global rerere.enabled true</code></pre>
+      <p>Especialmente útil en ramas de larga vida o rebases frecuentes que generan los mismos conflictos repetidamente.</p>
+
+      <h3>git notes — metadatos sin alterar commits</h3>
+      <p>Permite añadir notas a commits sin cambiar su SHA. Útil para CI: pegar resultados de tests, coverage o reviews sin reescribir historial:</p>
+      <pre><code>git notes add -m "Coverage: 87%" abc1234
+git log --show-notes</code></pre>
+
+      <h3>git replace — sustituir objetos</h3>
+      <p>Crea referencias en <code>refs/replace/</code> que mapean transparentemente un objeto a otro:</p>
+      <pre><code>git replace abc1234 def5678            # sustituye objeto
+git replace --graft commit padre1 padre2   # cambia padres sin reescribir</code></pre>
+      <p>Útil para conectar historiales de repositorios separados o corregir metadata sin alterar SHAs.</p>
+
+      <h3>commit-graph — acelerador de historial</h3>
+      <p>Archivo binario en <code>.git/objects/info/commit-graph</code> que pre-calcula metadata (generation numbers, tree hashes) para acelerar drásticamente operaciones como <code>git log</code>, <code>merge-base</code> y queries de reachability en repos grandes.</p>
+      <pre><code>git commit-graph write --reachable</code></pre>
+
+      <h3>git maintenance — mantenimiento automático</h3>
+      <p>Sistema de tareas programadas (Git 2.29+) que mantiene el rendimiento del repo:</p>
+      <pre><code>git maintenance start    # registra cron/launchd task
+# Tareas: gc parcial, prefetch, commit-graph, pack-refs, etc.</code></pre>
+
+      <h3>Partial clone</h3>
+      <p>Reduce drásticamente el tamaño inicial de un clone descargando objetos bajo demanda:</p>
+      <pre><code>git clone --filter=blob:none URL    # blobless: sin contenido de archivos
+git clone --filter=tree:0 URL       # treeless: solo commits</code></pre>
+      <p>Los blobs/trees se descargan automáticamente cuando los necesitas.</p>
+
+      <h3>Sparse-checkout — solo paths que necesitas</h3>
+      <p>Para monorepos donde solo trabajas con una parte del código:</p>
+      <pre><code>git sparse-checkout init --cone
+git sparse-checkout set apps/web packages/ui</code></pre>
+      <p>El working tree solo materializa los directorios indicados, ahorrando espacio y acelerando operaciones.</p>
+
+      <h3>Git LFS (Large File Storage)</h3>
+      <p>Sin LFS, cada versión de un binario grande se duplica en el historial. Con LFS, el repo solo guarda <strong>punteros de texto</strong>; el contenido real vive en un servidor LFS y se descarga bajo demanda:</p>
+      <pre><code>git lfs install
+git lfs track "*.psd"
+git lfs track "models/*.bin"
+git add .gitattributes</code></pre>
+
+      <h3>Git Hooks (cliente y servidor)</h3>
+      <p>Scripts que Git ejecuta automáticamente. Viven en <code>.git/hooks/</code>.</p>
+
+      <h4>Hooks del lado del <strong>cliente</strong>:</h4>
+      <ul>
+        <li><code>pre-commit</code> — antes de crear un commit (linting, tests)</li>
+        <li><code>commit-msg</code> — validar formato del mensaje</li>
+        <li><code>pre-push</code> — antes de subir al remoto</li>
+        <li><code>post-merge</code> — después de fusionar (reinstalar deps, etc.)</li>
+      </ul>
+
+      <h4>Hooks del lado del <strong>servidor</strong>:</h4>
+      <table>
+        <thead><tr><th>Hook</th><th>Cuándo y para qué</th></tr></thead>
+        <tbody>
+          <tr><td><code>pre-receive</code></td><td>Una sola vez por push, antes de aceptar nada. Puede rechazar todo.</td></tr>
+          <tr><td><code>update</code></td><td>Por cada ref individual. Puede rechazar ramas específicas.</td></tr>
+          <tr><td><code>post-receive</code></td><td>Tras aceptar todo. Ideal para webhooks, CI, notificaciones.</td></tr>
+          <tr><td><code>post-update</code></td><td>Similar a post-receive pero recibe solo los nombres de las refs.</td></tr>
+        </tbody>
+      </table>
+      <p>Para hooks de cliente compartidos en equipo, usa <strong>Husky</strong> (JS) o <strong>pre-commit</strong> (Python).</p>
+
+      <h3>Submódulos vs Subtrees</h3>
+      <table>
+        <thead><tr><th></th><th>Submódulos</th><th>Subtrees</th></tr></thead>
+        <tbody>
+          <tr><td>Almacenamiento</td><td>Referencia a commit externo</td><td>Código integrado en el repo</td></tr>
+          <tr><td>Tras clonar</td><td>Requiere <code>git submodule update --init</code></td><td>Funciona inmediatamente</td></tr>
+          <tr><td>Apunta a</td><td>Commit específico de otro repo</td><td>Snapshot del otro repo en este historial</td></tr>
+          <tr><td>Para contribuidores</td><td>Más complejo</td><td>Más simple</td></tr>
+        </tbody>
+      </table>
+
+      <h3>git worktree — múltiples directorios de trabajo</h3>
+      <p>Permite tener varios working directories del mismo repo, cada uno en una rama distinta. Sin clonar, sin stash:</p>
+      <pre><code>git worktree add ../hotfix main         # nuevo working tree en ../hotfix
+git worktree list                       # ver todos los worktrees
+git worktree remove ../hotfix</code></pre>
+
+      <h3>GitHub Actions avanzado</h3>
+
+      <h4>Build matrix (paralelización)</h4>
+      <pre><code>jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20, 22]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ matrix.node }} }</code></pre>
+      <p>Esto ejecuta 9 jobs en paralelo (3 SO × 3 versiones de Node).</p>
+
+      <h4>Job dependencies con <code>needs</code></h4>
+      <pre><code>jobs:
+  build:  { runs-on: ubuntu-latest, steps: [...] }
+  test:   { needs: build, runs-on: ubuntu-latest, steps: [...] }
+  deploy: { needs: [build, test], runs-on: ubuntu-latest, steps: [...] }</code></pre>
+
+      <h4>Composite actions vs Reusable workflows</h4>
+      <table>
+        <thead><tr><th></th><th>Composite action</th><th>Reusable workflow</th></tr></thead>
+        <tbody>
+          <tr><td>Reúsa</td><td>Steps dentro de un job</td><td>Jobs completos</td></tr>
+          <tr><td>Trigger</td><td><code>uses: ./.github/actions/...</code></td><td><code>workflow_call</code></td></tr>
+          <tr><td>Runner</td><td>Hereda del job que la llama</td><td>Define el suyo propio</td></tr>
+          <tr><td>Secrets</td><td>Hereda</td><td>Puede tener los suyos</td></tr>
+        </tbody>
+      </table>
+
+      <h3>GitHub Advanced Security (GHAS)</h3>
+      <p>Suite de seguridad enterprise que incluye:</p>
+      <ul>
+        <li><strong>CodeQL:</strong> análisis estático (SAST) para encontrar vulnerabilidades en el código</li>
+        <li><strong>Secret scanning + push protection:</strong> bloquea pushes con secretos detectados</li>
+        <li><strong>Dependency review:</strong> alerta sobre dependencias vulnerables en PRs</li>
+        <li><strong>Security overview:</strong> dashboard centralizado de seguridad</li>
+      </ul>
+
+      <h3>Supply chain security</h3>
+      <p>Mecanismos clave para proteger la cadena de suministro:</p>
+      <ul>
+        <li><strong>Dependabot alerts:</strong> notifica vulnerabilidades en dependencias</li>
+        <li><strong>Secret scanning:</strong> detecta credenciales filtradas</li>
+        <li><strong>Code scanning con CodeQL:</strong> análisis estático automatizado</li>
+        <li><strong>Signed commits:</strong> GPG o Sigstore/gitsign</li>
+      </ul>
+      <p><em>Las branch protection rules son governance, no supply chain security.</em></p>
+
+      <h3>Sigstore / gitsign — firma sin gestionar claves</h3>
+      <p>Alternativa moderna a GPG: usa identidades OIDC (GitHub, Google) y certificados efímeros. Las firmas se publican en <strong>Rekor</strong>, un transparency log público:</p>
+      <pre><code>brew install sigstore/tap/gitsign
+gitsign verify HEAD</code></pre>
+
+      <h3>Pack protocol y Git protocol v2</h3>
+      <p>El <strong>pack protocol</strong> negocia y transfiere packfiles (objetos comprimidos) entre cliente y servidor durante clone/fetch/push.</p>
+      <p>El <strong>protocolo Git v2</strong> mejora el original con:</p>
+      <ul>
+        <li>Capability advertisement simplificado</li>
+        <li>Reducción de overhead en repos con muchas refs</li>
+        <li>Soporte nativo de partial clone filters</li>
+        <li><code>object-info</code> para consultar metadata sin descargar</li>
+      </ul>
+      <p>Funciona sobre HTTP/1.1, SSH y sockets — no requiere HTTP/2.</p>
+
+      <h3>Monorepos con Turborepo</h3>
+      <p>Build system que serializa el grafo de tareas de un monorepo y cachea resultados. Solo re-ejecuta tareas cuando los inputs cambiaron:</p>
+      <pre><code>turbo run build --filter=web</code></pre>
+      <p>Puede usar el <strong>caché remoto de GitHub Actions</strong> como backend, evitando recompilaciones entre runs y entre desarrolladores.</p>
+
+      <h3>GitOps con Argo CD / Flux</h3>
+      <p>Paradigma donde el repositorio Git es la <strong>única fuente de verdad</strong> de la infraestructura:</p>
+      <ol>
+        <li>Un PR actualiza manifiestos YAML en el repo</li>
+        <li>GitHub Actions valida y fusiona</li>
+        <li>Argo CD / Flux detecta el cambio y sincroniza el clúster automáticamente</li>
+      </ol>
+      <p>Importante: el CI <strong>nunca hace push directo al clúster</strong>. El clúster <em>tira</em> de Git, no recibe pushes externos.</p>
+
+      <h3>git filter-branch / git-filter-repo</h3>
+      <p>Para reescribir el historial completo (eliminar archivos sensibles que se commitearon, cambiar el email del autor, etc.):</p>
+      <pre><code># git-filter-repo es la alternativa moderna recomendada
+git filter-repo --path archivo-secreto.txt --invert-paths</code></pre>
+
+      <h3>Modelos de branching</h3>
+      <table>
+        <thead><tr><th>Modelo</th><th>Filosofía</th><th>Cuándo usarlo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Trunk-based</strong></td><td>Una sola rama larga (main), feature branches cortas (&lt; 1 día)</td><td>Equipos con CI/CD maduro y deploy continuo</td></tr>
+          <tr><td><strong>Git Flow</strong></td><td>Ramas long-lived: develop, release, hotfix, feature</td><td>Releases programados, software con versionado fuerte</td></tr>
+          <tr><td><strong>GitHub Flow</strong></td><td>main + feature branches con PR</td><td>SaaS, deploy frecuente</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <strong>Recomendación:</strong> En 2026, la mayoría de equipos web modernos usan GitHub Flow o Trunk-based. Git Flow está cayendo en desuso para SaaS pero sigue siendo válido para software con releases versionados.
+      </div>
+    </article>
+
+    <!-- ─── FINAL CTA ─── -->
+    <section class="final-cta">
+      <h2>¿Listo para evaluarte?</h2>
+      <p>Pon a prueba todo lo aprendido con el cuestionario maestro: 100 preguntas distribuidas en 4 niveles, desde lo básico hasta GitOps y Git internals.</p>
+      <a href="git-github-quiz.html" class="btn-quiz">
+        Comenzar Quiz
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Sidebar active link tracking
+  const links = document.querySelectorAll('.sb-link');
+  const modules = document.querySelectorAll('.module');
+
+  function updateActiveLink() {
+    let current = '';
+    const scrollPos = window.scrollY + 120;
+
+    modules.forEach(mod => {
+      if (scrollPos >= mod.offsetTop) {
+        current = mod.id;
+      }
+    });
+
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink);
+  updateActiveLink();
+
+  // Smooth scroll for sidebar links
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

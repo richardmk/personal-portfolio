@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Centro de Aprendizaje - Cursos y documentación sobre planeación, desarrollo y despliegue">
+    <title>Centro de Aprendizaje | Richard Mejía</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="learn-body">
+    <!-- Background -->
+    <div class="grid-bg"></div>
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+
+    <!-- Top bar -->
+    <header class="learn-topbar">
+        <a href="index.html" class="learn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Volver al portafolio</span>
+        </a>
+        <a href="index.html" class="learn-brand">
+            <span class="learn-brand-name">Richard Mejía</span>
+            <span class="learn-brand-tag">ML Engineer</span>
+        </a>
+    </header>
+
+    <main class="learn-main">
+
+        <!-- Hero -->
+        <section class="learn-hero">
+            <span class="learn-hero-label">Centro de Aprendizaje</span>
+            <h1 class="learn-hero-title">Documentación, cursos<br>y evaluaciones</h1>
+            <p class="learn-hero-subtitle">Material de aprendizaje sobre las herramientas y metodologías que utilizo a diario, desde la planeación de proyectos hasta el despliegue en producción.</p>
+        </section>
+
+        <!-- Filter chips -->
+        <div class="learn-filters">
+            <button class="learn-chip active" data-filter="todos">Todos</button>
+            <button class="learn-chip" data-filter="planeacion">Planeación</button>
+            <button class="learn-chip" data-filter="desarrollo">Desarrollo</button>
+            <button class="learn-chip" data-filter="ml">Machine Learning</button>
+            <button class="learn-chip" data-filter="mlops">MLOps & DevOps</button>
+            <button class="learn-chip" data-filter="cloud">Cloud</button>
+        </div>
+
+        <!-- Courses grid -->
+        <section class="learn-courses">
+
+            <article class="course-card" data-category="planeacion">
+                <div class="course-card-head">
+                    <span class="course-tag">Planeación</span>
+                    <span class="course-level">Básico</span>
+                </div>
+                <h3 class="course-title">Gestión Ágil de Proyectos de IA</h3>
+                <p class="course-desc">Cómo planificar entregas iterativas, definir métricas de éxito y gestionar riesgos en proyectos de Machine Learning.</p>
+                <div class="course-card-foot">
+                    <div class="course-meta">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>6 lecciones</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>1h 30min</span>
+                    </div>
+                    <a href="#" class="course-action">
+                        Comenzar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="course-card featured" data-category="desarrollo">
+                <div class="course-card-head">
+                    <span class="course-tag">Desarrollo</span>
+                    <span class="course-level">Básico → Experto</span>
+                </div>
+                <h3 class="course-title">Git & GitHub — Curso Completo</h3>
+                <p class="course-desc">7 módulos progresivos sobre control de versiones: fundamentos, ramas, remotos, rebasing, GitHub workflow, comandos avanzados y nivel experto. Incluye quiz de 100 preguntas.</p>
+                <div class="course-card-foot">
+                    <div class="course-meta">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>7 módulos · Quiz 100p</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>~3h</span>
+                    </div>
+                    <a href="git-github-curso.html" class="course-action">
+                        Comenzar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="course-card" data-category="ml">
+                <div class="course-card-head">
+                    <span class="course-tag">Machine Learning</span>
+                    <span class="course-level">Intermedio</span>
+                </div>
+                <h3 class="course-title">Fundamentos de Deep Learning con PyTorch</h3>
+                <p class="course-desc">Redes neuronales, backpropagation, optimizadores y arquitecturas modernas explicadas desde cero con ejemplos prácticos.</p>
+                <div class="course-card-foot">
+                    <div class="course-meta">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>12 lecciones</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>4h 20min</span>
+                    </div>
+                    <a href="#" class="course-action">
+                        Comenzar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="course-card" data-category="mlops">
+                <div class="course-card-head">
+                    <span class="course-tag">MLOps</span>
+                    <span class="course-level">Avanzado</span>
+                </div>
+                <h3 class="course-title">Despliegue de Modelos con Docker & Kubernetes</h3>
+                <p class="course-desc">Containerización, orquestación y escalado de servicios de inferencia para producción.</p>
+                <div class="course-card-foot">
+                    <div class="course-meta">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>10 lecciones</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>3h 45min</span>
+                    </div>
+                    <a href="#" class="course-action">
+                        Comenzar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="course-card" data-category="cloud">
+                <div class="course-card-head">
+                    <span class="course-tag">Cloud</span>
+                    <span class="course-level">Intermedio</span>
+                </div>
+                <h3 class="course-title">AWS para Machine Learning</h3>
+                <p class="course-desc">SageMaker, Lambda, S3 y arquitecturas serverless para entrenar y servir modelos en la nube.</p>
+                <div class="course-card-foot">
+                    <div class="course-meta">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>9 lecciones</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>3h 10min</span>
+                    </div>
+                    <a href="#" class="course-action">
+                        Comenzar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </article>
+
+            <article class="course-card" data-category="desarrollo">
+                <div class="course-card-head">
+                    <span class="course-tag">Desarrollo</span>
+                    <span class="course-level">Básico</span>
+                </div>
+                <h3 class="course-title">Python avanzado para Data Science</h3>
+                <p class="course-desc">Patrones, decoradores, generadores y buenas prácticas para escribir código limpio en proyectos de datos.</p>
+                <div class="course-card-foot">
+                    <div class="course-meta">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>7 lecciones</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>2h 30min</span>
+                    </div>
+                    <a href="#" class="course-action">
+                        Comenzar
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Empty state placeholder when filters return nothing -->
+        <div class="learn-empty" hidden>
+            <p>No hay cursos disponibles en esta categoría todavía.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="learn-footer">
+            <p>&copy; 2026 Richard Mejía. Construido con precisión.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Filter chips
+        const chips = document.querySelectorAll('.learn-chip');
+        const cards = document.querySelectorAll('.course-card');
+        const empty = document.querySelector('.learn-empty');
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+
+                const filter = chip.getAttribute('data-filter');
+                let visible = 0;
+
+                cards.forEach(card => {
+                    const matches = filter === 'todos' || card.getAttribute('data-category') === filter;
+                    card.style.display = matches ? '' : 'none';
+                    if (matches) visible++;
+                });
+
+                empty.hidden = visible > 0;
+            });
+        });
+    </script>
+</body>
+</html>
