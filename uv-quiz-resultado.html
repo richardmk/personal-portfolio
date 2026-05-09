@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>uv — Cuestionario (resultado)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --warn: #d29922;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --easy: #56d364;
+    --medium: #e3b341;
+    --expert: #bc8cff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(121,192,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(121,192,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .tb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    transition: color 0.15s;
+  }
+  .tb-link:hover { color: var(--accent2); }
+  .tb-link svg { width: 14px; height: 14px; }
+  .tb-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .tb-title .uv { color: var(--accent); }
+  .tb-title .py { color: var(--accent2); }
+
+  /* ── RESULTADOS ── */
+  #results {
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .result-summary-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .result-summary-tag .lvl-pill {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .result-summary-tag.easy   .lvl-pill { background: var(--easy); }
+  .result-summary-tag.medium .lvl-pill { background: var(--medium); }
+  .result-summary-tag.expert .lvl-pill { background: var(--expert); }
+  .result-summary-tag.all    .lvl-pill { background: var(--accent2); }
+
+  .result-ring {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 32px;
+  }
+
+  .result-ring svg { transform: rotate(-90deg); }
+
+  .ring-bg { fill: none; stroke: var(--surface2); stroke-width: 12; }
+  .ring-val {
+    fill: none;
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    transition: stroke-dashoffset 1.2s ease;
+  }
+
+  .ring-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .ring-pct { font-size: 2.2rem; font-weight: 700; }
+  .ring-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  h2.result-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .result-msg {
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 420px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto 32px;
+  }
+
+  .bd-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: left;
+  }
+  .bd-card .bd-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .bd-card .bd-val   { font-size: 1.5rem; font-weight: 700; }
+
+  .result-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-restart {
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 40px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-restart:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(247,129,102,0.35); }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .btn-secondary:hover { transform: translateY(-2px); border-color: var(--accent2); }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 720px) {
+    .topbar { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+    .tb-link { font-size: 0.7rem; }
+    .tb-title { display: none; }
+    #results { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <a href="uv-curso.html" class="tb-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Volver al curso
+  </a>
+  <div class="tb-title"><span class="uv">uv</span> · <span class="py">Python</span> · Resultado</div>
+  <a href="aprendizaje.html" class="tb-link">
+    Centro de Aprendizaje
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+</header>
+
+<!-- ═══ RESULTADOS ═══ -->
+<div id="results">
+  <div class="result-summary-tag" id="summary-tag">
+    <span class="lvl-pill"></span>
+    <span id="summary-text">—</span>
+  </div>
+
+  <div class="result-ring">
+    <svg width="160" height="160" viewBox="0 0 160 160">
+      <circle class="ring-bg" cx="80" cy="80" r="70"/>
+      <circle class="ring-val" id="ring-val" cx="80" cy="80" r="70"/>
+    </svg>
+    <div class="ring-text">
+      <div class="ring-pct" id="ring-pct">0%</div>
+      <div class="ring-lbl">Score</div>
+    </div>
+  </div>
+
+  <h2 class="result-title" id="result-title">¡Cuestionario completado!</h2>
+  <p class="result-msg" id="result-msg"></p>
+
+  <div class="breakdown-grid">
+    <div class="bd-card"><div class="bd-label">Correctas</div><div class="bd-val" id="bd-correct" style="color:var(--accent3)">0</div></div>
+    <div class="bd-card"><div class="bd-label">Incorrectas</div><div class="bd-val" id="bd-wrong" style="color:var(--accent)">0</div></div>
+    <div class="bd-card"><div class="bd-label">Omitidas</div><div class="bd-val" id="bd-skip" style="color:var(--warn)">0</div></div>
+    <div class="bd-card"><div class="bd-label">Precisión</div><div class="bd-val" id="bd-pct" style="color:var(--accent2)">0%</div></div>
+  </div>
+
+  <div class="result-actions">
+    <a href="uv-quiz.html" class="btn-restart">Volver a intentar</a>
+    <a href="uv-curso.html" class="btn-secondary">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M8 13L3 8l5-5"/></svg>
+      Repasar el curso
+    </a>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  Página 3 de 3 — RESULTADO
+//  Lee los resultados desde localStorage y los muestra.
+//  Si no hay resultados, redirige a la carátula.
+// ══════════════════════════════════════════════
+
+const STORAGE_FILTER  = 'uvQuiz_filter';
+const STORAGE_RESULTS = 'uvQuiz_results';
+
+const raw = localStorage.getItem(STORAGE_RESULTS);
+if (!raw) {
+  window.location.replace('uv-quiz.html');
+}
+
+const data = JSON.parse(raw);
+const { filter, total, score, wrong, skipped } = data;
+const pct = total > 0 ? Math.round((score / total) * 100) : 0;
+
+// Etiqueta de nivel
+const LEVEL_LABELS = { all:'Todos los niveles', easy:'Fácil', medium:'Medio', expert:'Experto' };
+const tag = document.getElementById('summary-tag');
+tag.classList.add(filter);
+document.getElementById('summary-text').textContent =
+  `${LEVEL_LABELS[filter]} · ${total} preguntas`;
+
+// Breakdown
+document.getElementById('bd-correct').textContent = score;
+document.getElementById('bd-wrong').textContent   = wrong;
+document.getElementById('bd-skip').textContent    = skipped;
+document.getElementById('bd-pct').textContent     = pct + '%';
+
+// Anillo animado
+const ring = document.getElementById('ring-val');
+const circumference = 440;
+const offset = circumference - (pct / 100) * circumference;
+const ringColor = pct >= 80 ? 'var(--accent3)' : pct >= 50 ? 'var(--warn)' : 'var(--accent)';
+ring.style.stroke = ringColor;
+setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+document.getElementById('ring-pct').textContent = pct + '%';
+document.getElementById('ring-pct').style.color = ringColor;
+
+// Mensaje según porcentaje
+let title, msg;
+if (pct >= 90)      { title = '🏆 ¡Dominio completo!'; msg = 'Manejas uv a nivel experto: desde la analogía simple del primer módulo hasta workflows de CI/CD y Docker multi-stage.'; }
+else if (pct >= 75) { title = '🎯 ¡Muy buen nivel!'; msg = 'Tienes una base sólida. Refuerza el módulo 5 (uv en producción) para cerrar el círculo.'; }
+else if (pct >= 55) { title = '📈 ¡Buen progreso!'; msg = 'Vas por buen camino. Repasa los módulos de nivel medio (Python, lockfile) y experto.'; }
+else if (pct >= 35) { title = '📚 En construcción'; msg = 'Tienes los conceptos básicos. Dedica tiempo a entender pyproject.toml + uv.lock y los reemplazos de pip/pipx.'; }
+else                { title = '🌱 Empezando el camino'; msg = '¡Todos comenzamos aquí! Repasa los módulos del nivel fácil — la analogía de la construcción ayuda mucho — y vuelve a intentarlo.'; }
+
+document.getElementById('result-title').textContent = title;
+document.getElementById('result-msg').textContent   = msg;
+
+// Limpiar resultados al salir (la próxima visita a la carátula también los limpia)
+// No los borramos aquí para permitir refrescar la página y seguir viéndolos.
+</script>
+</body>
+</html>
