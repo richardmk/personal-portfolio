@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub — Cuestionario (preguntas)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --warn: #d29922;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --easy: #56d364;
+    --medium: #e3b341;
+    --expert: #bc8cff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(121,192,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(121,192,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .tb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    transition: color 0.15s;
+  }
+  .tb-link:hover { color: var(--accent2); }
+  .tb-link svg { width: 14px; height: 14px; }
+  .tb-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .tb-title .git { color: var(--accent); }
+  .tb-title .hub { color: var(--accent2); }
+
+  /* ── QUIZ ── */
+  .lv-easy   { color: var(--easy); }
+  .lv-medium { color: var(--medium); }
+  .lv-expert { color: var(--expert); }
+
+  .quiz-header {
+    position: sticky;
+    top: 49px;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    z-index: 100;
+    margin-bottom: 32px;
+  }
+
+  .quiz-header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .q-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .q-counter span { color: var(--accent2); font-weight: 700; }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  #quiz {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    animation: slideIn 0.35s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .q-num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); }
+  .q-type {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    padding: 3px 10px; border-radius: 4px; background: var(--surface2); color: var(--muted);
+  }
+  .q-level {
+    margin-left: auto;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    padding: 3px 10px; border-radius: 4px;
+  }
+
+  .q-text { font-size: 1.05rem; font-weight: 600; line-height: 1.6; margin-bottom: 20px; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    user-select: none;
+  }
+  .option:hover:not(.disabled) {
+    border-color: var(--accent2);
+    background: rgba(121,192,255,0.05);
+    transform: translateX(3px);
+  }
+  .option.selected { border-color: var(--accent2); background: rgba(121,192,255,0.1); }
+  .option.correct  { border-color: var(--accent3); background: rgba(86,211,100,0.12); }
+  .option.wrong    { border-color: var(--accent);  background: rgba(247,129,102,0.1); }
+  .option.disabled { cursor: default; }
+
+  .opt-key {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; font-weight: 700;
+    flex-shrink: 0; color: var(--muted);
+    transition: all 0.15s;
+  }
+  .option.selected .opt-key { border-color: var(--accent2); color: var(--accent2); }
+  .option.correct  .opt-key { border-color: var(--accent3); color: var(--accent3); background: rgba(86,211,100,0.2); }
+  .option.wrong    .opt-key { border-color: var(--accent);  color: var(--accent);  background: rgba(247,129,102,0.2); }
+
+  .opt-text { font-size: 0.92rem; line-height: 1.4; }
+
+  .fill-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .fill-input:focus { border-color: var(--accent2); }
+  .fill-input.correct { border-color: var(--accent3); background: rgba(86,211,100,0.08); }
+  .fill-input.wrong   { border-color: var(--accent);  background: rgba(247,129,102,0.08); }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: rgba(86,211,100,0.1);  border: 1px solid rgba(86,211,100,0.3);  color: var(--accent3); }
+  .feedback.err { background: rgba(247,129,102,0.1); border: 1px solid rgba(247,129,102,0.3); color: var(--accent); }
+
+  .q-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+
+  .btn {
+    padding: 10px 22px; border-radius: 8px; border: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  .btn-confirm { background: var(--accent2); color: #0d1117; }
+  .btn-next    { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-skip    { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+
+  .multi-hint {
+    font-size: 0.75rem; color: var(--warn);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 720px) {
+    .topbar { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+    .tb-link { font-size: 0.7rem; }
+    .tb-title { display: none; }
+    .quiz-header-inner { padding: 0 16px; gap: 12px; }
+    .q-card { padding: 22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <a href="git-github-quiz.html" class="tb-link" title="Reiniciar quiz (perderás el progreso)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Reiniciar quiz
+  </a>
+  <div class="tb-title"><span class="git">Git</span> &amp; <span class="hub">GitHub</span> · Quiz</div>
+  <a href="aprendizaje.html" class="tb-link">
+    Centro de Aprendizaje
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+</header>
+
+<!-- ═══ HEADER STICKY DEL QUIZ ═══ -->
+<div class="quiz-header">
+  <div class="quiz-header-inner">
+    <div class="q-counter">Pregunta <span id="q-num">1</span> / <span id="q-total">50</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="quiz">
+  <div id="question-container"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  Página 2 de 3 — PREGUNTAS
+// ══════════════════════════════════════════════
+
+const STORAGE_FILTER  = 'gitQuiz_filter';
+const STORAGE_RESULTS = 'gitQuiz_results';
+
+const activeFilter = localStorage.getItem(STORAGE_FILTER);
+if (!activeFilter) {
+  window.location.replace('git-github-quiz.html');
+}
+
+// ══════════════════════════════════════════════
+//  QUESTION BANK — 50 preguntas alineadas con los 7 módulos
+// ══════════════════════════════════════════════
+const questions = [
+
+// ─── FÁCIL · Módulos 1-3 (16 preguntas) ────────────────────────────
+
+// M1 · Fundamentos
+{level:'easy', type:'single', text:'¿Qué comando inicializa un repositorio Git en el directorio actual?',
+ options:['git start','git init','git create','git new'], answer:[1],
+ exp:'<code>git init</code> crea la carpeta oculta <code>.git</code> con la estructura interna del repo.'},
+
+{level:'easy', type:'tf', text:'Verdadero o Falso: Git es un sistema de control de versiones centralizado.',
+ options:['Verdadero','Falso'], answer:[1],
+ exp:'Falso. Git es <strong>distribuido</strong>: cada clon contiene el historial completo del repo.'},
+
+{level:'easy', type:'single', text:'¿Cuál es el orden correcto del ciclo básico de Git?',
+ options:['commit → add → status → push','status → add → commit → log','add → status → log → commit','log → commit → add → status'], answer:[1],
+ exp:'Primero ves qué cambió (<code>status</code>), preparas (<code>add</code>), confirmas (<code>commit</code>) y revisas el historial (<code>log</code>).'},
+
+{level:'easy', type:'fill', text:'Comando para configurar tu nombre globalmente: <code>git config ___ user.name "Tu Nombre"</code>',
+ answer:'--global', exp:'Con <code>--global</code> la configuración se aplica a todos tus repos. Sin esa flag, solo afecta al repo actual.'},
+
+{level:'easy', type:'multi', text:'¿Cuáles son estados válidos de un archivo en Git? (selecciona todos los correctos)',
+ options:['untracked','unmodified','modified','staged','pushed'], answer:[0,1,2,3],
+ exp:'"Pushed" no es un estado interno. Los cuatro estados reales son untracked, unmodified, modified y staged.'},
+
+{level:'easy', type:'single', text:'Si quieres que Git ignore <code>node_modules/</code> y <code>.env</code>, ¿dónde los pones?',
+ options:['En .gitexclude','En .gitignore en la raíz del repo','En git config --ignore','En un commit message'], answer:[1],
+ exp:'<code>.gitignore</code> en la raíz lista patrones que Git no rastreará. Si el archivo ya estaba rastreado, hay que sacarlo del índice con <code>git rm --cached</code>.'},
+
+// M2 · Ramas
+{level:'easy', type:'tf', text:'Verdadero o Falso: una rama en Git es esencialmente un puntero móvil a un commit.',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. Una rama es solo un archivo pequeño con el hash del último commit. Por eso crearlas es prácticamente instantáneo.'},
+
+{level:'easy', type:'single', text:'¿Cuál es la forma moderna (Git 2.23+) de crear y cambiar a una nueva rama?',
+ options:['git branch -new feature','git switch -c feature','git checkout new feature','git make-branch feature'], answer:[1],
+ exp:'<code>git switch -c feature</code> separa creación/cambio de rama de la manipulación de archivos. <code>git checkout -b feature</code> sigue siendo válido.'},
+
+{level:'easy', type:'single', text:'¿Qué muestra <code>git branch -a</code>?',
+ options:['Solo ramas locales','Solo ramas remotas','Ramas locales y remotas','Todas las ramas eliminadas'], answer:[2],
+ exp:'<code>-a</code> (all) lista todas las ramas: locales y las que provienen de remotos.'},
+
+{level:'easy', type:'single', text:'¿Cuál es la diferencia entre <code>git branch -d</code> y <code>git branch -D</code>?',
+ options:['Son idénticas','-d elimina solo si está fusionada; -D fuerza la eliminación aunque tenga commits únicos','-d borra remoto, -D borra local','-D requiere permisos de admin'], answer:[1],
+ exp:'<code>-d</code> es seguro (solo borra ramas ya fusionadas). <code>-D</code> fuerza el borrado y puede perder commits si no están en otra rama o en el reflog.'},
+
+{level:'easy', type:'fill', text:'Para renombrar la rama actual a <code>nuevo-nombre</code>: <code>git branch ___ nuevo-nombre</code>',
+ answer:'-m', exp:'<code>-m</code> (move/rename) renombra la rama actual. También <code>git branch -m vieja nueva</code> renombra una rama específica.'},
+
+// M3 · Remotos
+{level:'easy', type:'single', text:'¿Qué hace <code>git clone https://github.com/usuario/repo.git</code>?',
+ options:['Solo descarga el último commit','Descarga el repo completo: historial, ramas remotas y configura origin','Crea un nuevo repo vacío','Copia solo los archivos sin historial'], answer:[1],
+ exp:'<code>clone</code> baja todo el historial, las refs remotas y configura automáticamente el remote llamado <code>origin</code>.'},
+
+{level:'easy', type:'single', text:'¿Cuál es la diferencia clave entre <code>git fetch</code> y <code>git pull</code>?',
+ options:['Son idénticos','fetch solo descarga referencias; pull hace fetch + merge automático','pull es más rápido','fetch requiere permisos especiales'], answer:[1],
+ exp:'<code>fetch</code> es seguro: solo trae info del remoto sin tocar tu working tree. <code>pull</code> = <code>fetch</code> + <code>merge</code> automático.'},
+
+{level:'easy', type:'fill', text:'Primer push de una rama nueva, estableciendo tracking: <code>git push ___ origin feature-login</code>',
+ answer:'-u', exp:'<code>-u</code> (upstream) establece la rama remota como la "tracked". A partir de ahí, basta con <code>git push</code> sin argumentos.'},
+
+{level:'easy', type:'tf', text:'Verdadero o Falso: desde 2020, GitHub usa <code>main</code> como nombre por defecto de la rama principal en repos nuevos.',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. Es buena práctica adoptar <code>main</code> en proyectos nuevos.'},
+
+{level:'easy', type:'single', text:'¿Qué muestra <code>git remote -v</code>?',
+ options:['El historial de cambios remotos','La lista de remotos configurados con sus URLs (fetch y push)','Las ramas remotas activas','El estado de la conexión al servidor'], answer:[1],
+ exp:'Lista cada remote (origin, upstream, etc.) con sus URLs. Útil para verificar a qué servidor estás apuntando.'},
+
+
+// ─── MEDIO · Módulos 4-5 (15 preguntas) ────────────────────────────
+
+// M4 · Merge & Rebase
+{level:'medium', type:'single', text:'¿Cuándo realiza Git un merge "fast-forward"?',
+ options:['Siempre que hagas git merge','Cuando la rama destino no tuvo commits nuevos desde que se creó la rama feature','Solo en repos pequeños','Cuando usas --force'], answer:[1],
+ exp:'Si main no tiene commits propios desde que nació la rama, Git solo mueve el puntero hacia adelante. <strong>No</strong> crea merge commit.'},
+
+{level:'medium', type:'single', text:'¿Qué hace la flag <code>--no-ff</code> en <code>git merge</code>?',
+ options:['Aborta el merge','Fuerza la creación de un merge commit aunque sea posible un fast-forward','Hace el merge más rápido','Ignora conflictos'], answer:[1],
+ exp:'<code>--no-ff</code> mantiene visible la rama feature en el historial al forzar siempre un merge commit.'},
+
+{level:'medium', type:'tf', text:'Verdadero o Falso: <code>git rebase</code> reescribe la historia generando nuevos hashes para los commits movidos.',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. Por eso nunca debes hacer rebase de commits que ya empujaste a una rama compartida.'},
+
+{level:'medium', type:'single', text:'¿Cuál es la "regla de oro" del rebase?',
+ options:['Siempre hacer rebase antes de un merge','Nunca hacer rebase de commits que ya empujaste a una rama compartida','Hacer rebase solo en main','Rebase requiere permisos de admin'], answer:[1],
+ exp:'Reescribir historial público causa caos al equipo: los SHAs cambian y los demás tienen el "antiguo" historial.'},
+
+{level:'medium', type:'single', text:'¿Qué hace <code>git pull --rebase</code> en lugar de <code>git pull</code>?',
+ options:['Es más lento','En lugar de hacer merge, aplica tus commits locales encima de los del remoto, manteniendo historial lineal','Descarta cambios locales','Ignora conflictos'], answer:[1],
+ exp:'Evita merge commits innecesarios cuando solo quieres sincronizar tu rama con la versión más reciente del remoto.'},
+
+{level:'medium', type:'single', text:'¿Por qué <code>--force-with-lease</code> es preferible a <code>--force</code>?',
+ options:['Es más rápido','Solo fuerza el push si nadie más empujó a esa rama desde tu último fetch, evitando sobrescribir trabajo ajeno','--force ya no existe','Permite saltarse la autenticación'], answer:[1],
+ exp:'Si alguien más empujó a la rama, <code>--force-with-lease</code> falla y te protege. <code>--force</code> sobrescribe sin avisar.'},
+
+{level:'medium', type:'fill', text:'Los marcadores que Git añade a un archivo en conflicto son: <code>&lt;&lt;&lt;</code>, <code>===</code> y <code>___</code>',
+ answer:'>>>', exp:'<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; rama-otra</code>. Hay que dejar la versión correcta y eliminar los marcadores.'},
+
+{level:'medium', type:'single', text:'Estás a mitad de un rebase y quieres cancelarlo. ¿Qué comando usas?',
+ options:['git reset --hard','git rebase --abort','git checkout main','git stash'], answer:[1],
+ exp:'<code>git rebase --abort</code> cancela el rebase y deja el repo como estaba antes. Equivalente para merge: <code>git merge --abort</code>.'},
+
+// M5 · GitHub Workflow
+{level:'medium', type:'single', text:'¿Qué es un fork en GitHub?',
+ options:['Una rama remota','Una copia personal de un repo ajeno en tu cuenta de GitHub','Un commit clonado','Un tipo de PR'], answer:[1],
+ exp:'El fork te permite experimentar libremente. El flujo típico: fork → clone → branch → push a tu fork → PR al repo original.'},
+
+{level:'medium', type:'single', text:'¿Cómo se llama el equivalente al Pull Request de GitHub en GitLab?',
+ options:['Push Request','Merge Request','Patch Request','Code Request'], answer:[1],
+ exp:'GitLab usa <strong>Merge Request (MR)</strong>. El concepto es idéntico: solicitud formal para integrar cambios.'},
+
+{level:'medium', type:'single', text:'¿Qué hace la opción "Squash and merge" al fusionar un PR?',
+ options:['Crea un merge commit estándar','Combina todos los commits del PR en uno solo antes de fusionar a main','Rebase los commits sobre main','Cierra el PR sin fusionar'], answer:[1],
+ exp:'Es la opción más popular en equipos modernos: produce un historial limpio en main donde cada commit corresponde a una feature.'},
+
+{level:'medium', type:'fill', text:'Para que GitHub cierre automáticamente el issue #42 al fusionar el PR, escribe en la descripción: <code>___ #42</code>',
+ answer:'Closes', exp:'Palabras clave válidas: Closes, Fixes, Resolves (case-insensitive). GitHub cierra el issue cuando el PR se fusiona a la rama default.'},
+
+{level:'medium', type:'multi', text:'¿Cuáles son funciones de GitHub para gestión de proyectos? (selecciona todas las correctas)',
+ options:['Issues','Labels','Milestones','Projects (Kanban)','Forks de issues'], answer:[0,1,2,3],
+ exp:'Issues, Labels, Milestones y Projects forman el sistema de tracking. "Forks de issues" no existe.'},
+
+{level:'medium', type:'multi', text:'¿Qué incluye un buen Pull Request? (selecciona todas las correctas)',
+ options:['Título descriptivo y conciso','Descripción del problema y la solución','Capturas o ejemplos cuando aplique','Referencias a issues relacionados (Closes #X)','El historial completo de tu pensamiento durante el desarrollo'], answer:[0,1,2,3],
+ exp:'Lo importante es que el reviewer pueda entender qué y por qué en pocos segundos. El stream de consciencia no aporta valor.'},
+
+{level:'medium', type:'tf', text:'Verdadero o Falso: GitHub renderiza automáticamente el archivo <code>README.md</code> de la raíz del repo como página de presentación.',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. Es el primer contacto con tu proyecto, debe responder en menos de 30 segundos: qué es, para qué sirve y cómo se usa.'},
+
+
+// ─── EXPERTO · Módulos 6-7 (19 preguntas) ────────────────────────────
+
+// M6 · Recuperar & manipular
+{level:'expert', type:'single', text:'¿Para qué sirve <code>git stash</code>?',
+ options:['Hacer backup del repo','Guardar temporalmente cambios sin commitear y limpiar el working tree','Crear un commit oculto','Eliminar archivos'], answer:[1],
+ exp:'Útil cuando necesitas cambiar de rama pero tienes cambios en progreso. Recuperas con <code>git stash pop</code>.'},
+
+{level:'expert', type:'single', text:'¿Cuándo usarías <code>git cherry-pick</code>?',
+ options:['Para fusionar dos ramas completas','Para aplicar un commit específico de otra rama sobre la rama actual','Para borrar commits','Para inicializar un repo'], answer:[1],
+ exp:'Útil cuando necesitas un fix puntual de otra rama sin fusionarla completa. <code>git cherry-pick abc1234</code>.'},
+
+{level:'expert', type:'single', text:'En <code>git reset</code>, ¿cuál modo deshace el último commit pero mantiene los cambios en staging?',
+ options:['--hard','--soft','--mixed','--keep'], answer:[1],
+ exp:'<code>--soft</code> mueve HEAD pero no toca staging ni working tree. Útil para "rehacer" el último commit.'},
+
+{level:'expert', type:'single', text:'En una rama compartida con tu equipo, ¿cuál es la forma segura de "deshacer" un commit?',
+ options:['git reset --hard','git revert','git checkout HEAD~1','git branch -D'], answer:[1],
+ exp:'<code>git revert</code> crea un nuevo commit que invierte los cambios sin reescribir historial. <code>reset --hard</code> es destructivo en ramas compartidas.'},
+
+{level:'expert', type:'single', text:'Hiciste <code>git reset --hard</code> y "perdiste" un commit que no estaba en remoto. ¿Cómo lo recuperas?',
+ options:['Es imposible','Con git reflog encuentras el SHA del commit y haces git reset --hard a esa entrada','Reinstalando Git','Con git fetch'], answer:[1],
+ exp:'<code>git reflog</code> mantiene un log local de cada cambio de HEAD durante 90 días por defecto.'},
+
+{level:'expert', type:'single', text:'¿Cuál es la diferencia entre un tag "annotated" y uno "lightweight"?',
+ options:['No hay diferencia','El annotated es un objeto Git completo con autor, fecha y mensaje; el lightweight es solo un puntero a un commit','El lightweight es más pesado','Solo el annotated se puede pushear'], answer:[1],
+ exp:'Para releases siempre se recomienda annotated: <code>git tag -a v1.0 -m "Release 1.0"</code>.'},
+
+{level:'expert', type:'single', text:'En <code>git rebase -i</code>, ¿cuál es la diferencia entre <code>squash</code> y <code>fixup</code>?',
+ options:['Son alias','squash combina commits y abre el editor para fusionar mensajes; fixup combina pero descarta el mensaje del commit absorbido','squash es destructivo, fixup no','fixup requiere flag --force'], answer:[1],
+ exp:'<code>fixup</code> es ideal para "absorber" un commit menor (fix de typo, ajuste pequeño) en el commit anterior sin tocar el mensaje.'},
+
+{level:'expert', type:'single', text:'¿Para qué sirve <code>git bisect</code>?',
+ options:['Dividir un commit en dos','Búsqueda binaria automatizada para localizar el commit que introdujo un bug','Comparar dos ramas','Crear un fork'], answer:[1],
+ exp:'Marcas un commit como "good" y otro como "bad", y Git hace búsqueda binaria entre ellos. Súper útil para regresiones.'},
+
+// M7 · Temas adicionales
+{level:'expert', type:'fill', text:'Comando recomendado para generar una nueva clave SSH: <code>ssh-keygen -t ___ -C "tu@email.com"</code>',
+ answer:'ed25519', exp:'<code>ed25519</code> es el algoritmo moderno recomendado: más corto y seguro que RSA. Genera <code>id_ed25519</code> (privada) e <code>id_ed25519.pub</code> (pública).'},
+
+{level:'expert', type:'single', text:'Después de generar tu clave SSH, ¿cuál es el orden correcto para que ssh-agent la maneje?',
+ options:['ssh-add → eval ssh-agent','eval "$(ssh-agent -s)" → ssh-add ~/.ssh/id_ed25519','git config --ssh ed25519','No hace falta hacer nada extra'], answer:[1],
+ exp:'Primero inicias el agente, luego agregas tu clave. Si pusiste passphrase, te la pedirá una vez por sesión.'},
+
+{level:'expert', type:'single', text:'¿Qué comando prueba que tu autenticación SSH con GitHub funciona correctamente?',
+ options:['git test-ssh','ssh -T git@github.com','ssh github.com --verify','curl github.com'], answer:[1],
+ exp:'Deberías ver un mensaje como <em>"Hi usuario! You\'ve successfully authenticated..."</em>. La <code>-T</code> deshabilita la asignación de pseudo-terminal.'},
+
+{level:'expert', type:'single', text:'Tu repo usa HTTPS y quieres cambiar a SSH. ¿Qué comando usas?',
+ options:['git remote add ssh','git remote set-url origin git@github.com:usuario/repo.git','git config --ssh','git switch ssh'], answer:[1],
+ exp:'<code>git remote set-url origin</code> cambia la URL del remoto sin perder configuración. Verifica con <code>git remote -v</code>.'},
+
+{level:'expert', type:'single', text:'¿Cuál es la ubicación correcta para las plantillas de issues en un repo de GitHub?',
+ options:['/templates/issues/','/.github/ISSUE_TEMPLATE/','/issues/templates/','En el README.md'], answer:[1],
+ exp:'GitHub busca plantillas en <code>.github/ISSUE_TEMPLATE/</code> (también acepta el formato YAML moderno con campos validados).'},
+
+{level:'expert', type:'tf', text:'Verdadero o Falso: con <code>blank_issues_enabled: false</code> en <code>.github/ISSUE_TEMPLATE/config.yml</code> obligas a los usuarios a usar tus plantillas.',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. Recibes issues mucho más útiles porque la gente no puede abrir uno en blanco.'},
+
+{level:'expert', type:'single', text:'En una plantilla YAML de issue, ¿cómo marcas un campo de texto como obligatorio?',
+ options:['type: required','required: true bajo validations','attributes: required','En GitHub no es posible'], answer:[1],
+ exp:'<pre>validations:\n  required: true</pre>impide enviar el issue si el campo está vacío.'},
+
+{level:'expert', type:'fill', text:'El nombre exacto del archivo para la plantilla de Pull Request es: <code>.github/______________.md</code>',
+ answer:'PULL_REQUEST_TEMPLATE', exp:'GitHub lo detecta automáticamente y lo carga como descripción inicial de cada PR. Puedes tener variantes en <code>.github/PULL_REQUEST_TEMPLATE/</code>.'},
+
+{level:'expert', type:'multi', text:'¿Qué secciones debería tener un buen README de proyecto? (selecciona todas las correctas)',
+ options:['Título y tagline','Captura o GIF si es visual','Instalación y uso básico','Configuración (variables de entorno)','Cómo contribuir y licencia','Tu historia personal de cómo aprendiste a programar'], answer:[0,1,2,3,4],
+ exp:'El lector debe saber qué hace, cómo instalarlo y cómo usarlo en menos de 30 segundos. Tu autobiografía no aporta — guárdala para tu README de perfil si quieres.'},
+
+{level:'expert', type:'single', text:'Para que un README aparezca en la parte superior de tu perfil de GitHub, ¿qué nombre debe tener el repositorio?',
+ options:['profile','readme','El mismo nombre exacto que tu nombre de usuario','main'], answer:[2],
+ exp:'Si tu usuario es <code>richardmk</code>, crea un repo público <code>richardmk/richardmk</code> con un README.md. GitHub lo detecta y lo muestra en tu perfil.'},
+
+{level:'expert', type:'single', text:'Si manejas dos cuentas de GitHub (personal y trabajo), ¿cuál es la mejor forma de configurar SSH?',
+ options:['Tener un solo par de claves para todo','Crear un archivo ~/.ssh/config con un Host alias por cada cuenta, cada uno con su IdentityFile','Reinstalar SSH cada vez que cambies de cuenta','No es posible'], answer:[1],
+ exp:'Defines aliases como <code>Host github-personal</code> y <code>Host github-trabajo</code>, y luego clonas con <code>git@github-personal:usuario/repo.git</code>.'},
+
+];
+
+// ══════════════════════════════════════════════
+//  STATE + LÓGICA
+// ══════════════════════════════════════════════
+const activeQuestions = activeFilter === 'all'
+  ? questions
+  : questions.filter(q => q.level === activeFilter);
+
+let current = 0, score = 0, wrong = 0, skipped = 0;
+let answered = false;
+let selectedOptions = new Set();
+
+document.getElementById('q-total').textContent = activeQuestions.length;
+
+function renderQuestion() {
+  answered = false;
+  const q = activeQuestions[current];
+  updateHeader();
+
+  const container = document.getElementById('question-container');
+
+  const levelColors = { easy:'var(--easy)', medium:'var(--medium)', expert:'var(--expert)' };
+  const levelLabels = { easy:'Fácil', medium:'Medio', expert:'Experto' };
+  const typeLabels  = { single:'Opción única', multi:'Opción múltiple', tf:'Verdadero/Falso', fill:'Completar' };
+
+  let optionsHTML = '';
+
+  if (q.type === 'fill') {
+    optionsHTML = `<input class="fill-input" id="fill-input" placeholder="Escribe tu respuesta aquí..." autocomplete="off" spellcheck="false">`;
+  } else {
+    const keys = ['A','B','C','D','E','F'];
+    if (q.type === 'multi') {
+      optionsHTML += `<div class="multi-hint">⚡ Selecciona todas las correctas</div>`;
+    }
+    optionsHTML += '<div class="options">';
+    q.options.forEach((opt, i) => {
+      optionsHTML += `
+        <div class="option" id="opt-${i}" onclick="selectOption(${i})">
+          <div class="opt-key">${keys[i]}</div>
+          <div class="opt-text">${opt}</div>
+        </div>`;
+    });
+    optionsHTML += '</div>';
+  }
+
+  container.innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">Pregunta ${current + 1}</span>
+        <span class="q-type">${typeLabels[q.type]}</span>
+        <span class="q-level" style="color:${levelColors[q.level]};background:${levelColors[q.level]}18;border:1px solid ${levelColors[q.level]}44">${levelLabels[q.level]}</span>
+      </div>
+      <div class="q-text">${q.text}</div>
+      ${optionsHTML}
+      <div class="feedback" id="feedback"></div>
+      <div class="q-actions">
+        <button class="btn btn-confirm" id="btn-confirm" onclick="confirmAnswer()">Confirmar</button>
+        <button class="btn btn-next" id="btn-next" onclick="nextQuestion()" style="display:none">Siguiente →</button>
+        <button class="btn btn-skip" id="btn-skip" onclick="skipQuestion()">Omitir</button>
+      </div>
+    </div>`;
+
+  if (q.type === 'fill') {
+    const inp = document.getElementById('fill-input');
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') confirmAnswer(); });
+    inp.focus();
+  }
+}
+
+function selectOption(i) {
+  if (answered) return;
+  const q = activeQuestions[current];
+  const opt = document.getElementById(`opt-${i}`);
+
+  if (q.type === 'multi') {
+    if (selectedOptions.has(i)) {
+      selectedOptions.delete(i);
+      opt.classList.remove('selected');
+    } else {
+      selectedOptions.add(i);
+      opt.classList.add('selected');
+    }
+  } else {
+    selectedOptions.clear();
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    selectedOptions.add(i);
+    opt.classList.add('selected');
+  }
+}
+
+function confirmAnswer() {
+  if (answered) return;
+  const q = activeQuestions[current];
+  const fb = document.getElementById('feedback');
+  answered = true;
+
+  let isCorrect = false;
+
+  if (q.type === 'fill') {
+    const val = document.getElementById('fill-input').value.trim().toLowerCase();
+    const ans = q.answer.toLowerCase();
+    isCorrect = val === ans;
+    const inp = document.getElementById('fill-input');
+    inp.classList.add(isCorrect ? 'correct' : 'wrong');
+    inp.disabled = true;
+  } else {
+    const correctSet = new Set(q.answer);
+    const selected = selectedOptions;
+    if (selected.size === 0) { answered = false; return; }
+
+    q.options.forEach((_, i) => {
+      const el = document.getElementById(`opt-${i}`);
+      el.classList.add('disabled');
+      if (correctSet.has(i) && selected.has(i)) el.classList.add('correct');
+      else if (correctSet.has(i))               el.classList.add('correct');
+      else if (selected.has(i))                 el.classList.add('wrong');
+    });
+
+    if (q.type === 'multi') {
+      isCorrect = correctSet.size === selected.size && [...selected].every(x => correctSet.has(x));
+    } else {
+      isCorrect = selected.size === 1 && correctSet.has([...selected][0]);
+    }
+  }
+
+  selectedOptions = new Set();
+
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback ok show';
+    fb.innerHTML = `✓ ¡Correcto! &nbsp;${q.exp}`;
+  } else {
+    wrong++;
+    fb.className = 'feedback err show';
+    const correctAnswers = q.type === 'fill'
+      ? `<code>${q.answer}</code>`
+      : q.answer.map(i => `<strong>${q.options[i]}</strong>`).join(', ');
+    fb.innerHTML = `✗ Incorrecto. Respuesta: ${correctAnswers} &nbsp;—&nbsp; ${q.exp}`;
+  }
+
+  document.getElementById('btn-confirm').style.display = 'none';
+  document.getElementById('btn-skip').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'inline-flex';
+  updateHeader();
+}
+
+function skipQuestion() {
+  skipped++;
+  nextQuestion();
+}
+
+function nextQuestion() {
+  selectedOptions = new Set();
+  current++;
+  if (current >= activeQuestions.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function updateHeader() {
+  document.getElementById('q-num').textContent = current + 1;
+  const pct = (current / activeQuestions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function finishQuiz() {
+  const payload = {
+    filter: activeFilter,
+    total:  activeQuestions.length,
+    score, wrong, skipped
+  };
+  localStorage.setItem(STORAGE_RESULTS, JSON.stringify(payload));
+  window.location.href = 'git-github-quiz-resultado.html';
+}
+
+// ══════════════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  const inputFocused = document.activeElement && document.activeElement.tagName === 'INPUT';
+  if (inputFocused && e.key !== 'Enter') return;
+
+  if (!answered && /^[1-5]$/.test(e.key)) {
+    const idx = parseInt(e.key, 10) - 1;
+    const opt = document.getElementById(`opt-${idx}`);
+    if (opt) selectOption(idx);
+    return;
+  }
+
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (!answered) {
+      const q = activeQuestions[current];
+      if (q.type === 'fill' || selectedOptions.size > 0) confirmAnswer();
+    } else {
+      nextQuestion();
+    }
+    return;
+  }
+
+  if (!answered && (e.key === 's' || e.key === 'S')) {
+    skipQuestion();
+  }
+});
+
+renderQuestion();
+</script>
+</body>
+</html>

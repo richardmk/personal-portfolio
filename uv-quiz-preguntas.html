@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>uv — Cuestionario (preguntas)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --warn: #d29922;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --easy: #56d364;
+    --medium: #e3b341;
+    --expert: #bc8cff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(121,192,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(121,192,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .tb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    transition: color 0.15s;
+  }
+  .tb-link:hover { color: var(--accent2); }
+  .tb-link svg { width: 14px; height: 14px; }
+  .tb-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .tb-title .uv { color: var(--accent); }
+  .tb-title .py { color: var(--accent2); }
+
+  /* ── QUIZ ── */
+  .lv-easy   { color: var(--easy); }
+  .lv-medium { color: var(--medium); }
+  .lv-expert { color: var(--expert); }
+
+  .quiz-header {
+    position: sticky;
+    top: 49px;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    z-index: 100;
+    margin-bottom: 32px;
+  }
+
+  .quiz-header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .q-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .q-counter span { color: var(--accent2); font-weight: 700; }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  #quiz {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    animation: slideIn 0.35s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .q-type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--muted);
+  }
+
+  .q-level {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 4px;
+  }
+
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    user-select: none;
+  }
+
+  .option:hover:not(.disabled) {
+    border-color: var(--accent2);
+    background: rgba(121,192,255,0.05);
+    transform: translateX(3px);
+  }
+
+  .option.selected { border-color: var(--accent2); background: rgba(121,192,255,0.1); }
+  .option.correct  { border-color: var(--accent3); background: rgba(86,211,100,0.12); }
+  .option.wrong    { border-color: var(--accent);  background: rgba(247,129,102,0.1); }
+  .option.disabled { cursor: default; }
+
+  .opt-key {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .option.selected .opt-key { border-color: var(--accent2); color: var(--accent2); }
+  .option.correct  .opt-key { border-color: var(--accent3); color: var(--accent3); background: rgba(86,211,100,0.2); }
+  .option.wrong    .opt-key { border-color: var(--accent);  color: var(--accent);  background: rgba(247,129,102,0.2); }
+
+  .opt-text { font-size: 0.92rem; line-height: 1.4; }
+
+  .fill-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .fill-input:focus { border-color: var(--accent2); }
+  .fill-input.correct { border-color: var(--accent3); background: rgba(86,211,100,0.08); }
+  .fill-input.wrong   { border-color: var(--accent);  background: rgba(247,129,102,0.08); }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: rgba(86,211,100,0.1);  border: 1px solid rgba(86,211,100,0.3);  color: var(--accent3); }
+  .feedback.err { background: rgba(247,129,102,0.1); border: 1px solid rgba(247,129,102,0.3); color: var(--accent); }
+
+  .q-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+
+  .btn-confirm { background: var(--accent2); color: #0d1117; }
+  .btn-next    { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-skip    { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+
+  .multi-hint {
+    font-size: 0.75rem;
+    color: var(--warn);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 720px) {
+    .topbar { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+    .tb-link { font-size: 0.7rem; }
+    .tb-title { display: none; }
+    .quiz-header-inner { padding: 0 16px; gap: 12px; }
+    .q-card { padding: 22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <a href="uv-quiz.html" class="tb-link" title="Reiniciar quiz (perderás el progreso)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Reiniciar quiz
+  </a>
+  <div class="tb-title"><span class="uv">uv</span> · <span class="py">Python</span> · Quiz</div>
+  <a href="aprendizaje.html" class="tb-link">
+    Centro de Aprendizaje
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+</header>
+
+<!-- ═══ HEADER STICKY DEL QUIZ ═══ -->
+<div class="quiz-header">
+  <div class="quiz-header-inner">
+    <div class="q-counter">Pregunta <span id="q-num">1</span> / <span id="q-total">20</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="quiz">
+  <div id="question-container"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  Página 2 de 3 — PREGUNTAS
+//  Lee el filtro de localStorage, ejecuta el quiz
+//  y al terminar guarda los resultados y navega
+//  a la página de resultados.
+// ══════════════════════════════════════════════
+
+const STORAGE_FILTER  = 'uvQuiz_filter';
+const STORAGE_RESULTS = 'uvQuiz_results';
+
+// Si el usuario llega aquí sin haber pasado por la carátula, devolverlo
+const activeFilter = localStorage.getItem(STORAGE_FILTER);
+if (!activeFilter) {
+  window.location.replace('uv-quiz.html');
+}
+
+// ══════════════════════════════════════════════
+//  QUESTION BANK — 20 preguntas alineadas con los 5 módulos
+// ══════════════════════════════════════════════
+const questions = [
+
+// ─── FÁCIL · Módulos 1-2 (8 preguntas) ────────────────────────────
+
+// M1 · ¿Qué es uv?
+{level:'easy', type:'single', text:'En la analogía de construcción del curso, ¿qué representa un "material" (concreto, acero, vidrio templado)?',
+ options:['Un proyecto de Python','Un paquete de Python (ej. pandas, requests)','Una versión de Python','El entorno virtual'], answer:[1],
+ exp:'Un material = un paquete (<code>pandas</code>, <code>requests</code>). La obra es el proyecto, la bodega de obra es el venv y la maquinaria base es la versión de Python.'},
+
+{level:'easy', type:'tf', text:'Verdadero o Falso: uv está escrito en Python para máxima compatibilidad.',
+ options:['Verdadero','Falso'], answer:[1],
+ exp:'Falso. uv está escrito en <strong>Rust</strong> — esa es una de las razones de su velocidad (10–100× más rápido que pip).'},
+
+{level:'easy', type:'multi', text:'¿Qué herramientas tradicionales reemplaza uv? (selecciona todas las correctas)',
+ options:['pip','virtualenv','pyenv','pipx','poetry','pytest'], answer:[0,1,2,3,4],
+ exp:'uv reemplaza pip, virtualenv, pyenv, pipx, pip-tools y poetry. <code>pytest</code> es un framework de testing — uv no lo reemplaza, lo ejecuta con <code>uv run pytest</code>.'},
+
+// M2 · Instalación y comandos diarios — instalación / primer proyecto
+{level:'easy', type:'single', text:'¿Qué comando crea un nuevo proyecto Python con uv?',
+ options:['uv create mi-proyecto','uv new mi-proyecto','uv init mi-proyecto','uv start mi-proyecto'], answer:[2],
+ exp:'<code>uv init mi-proyecto</code> genera la estructura completa: <code>pyproject.toml</code>, <code>.python-version</code>, <code>main.py</code> y <code>README.md</code>.'},
+
+{level:'easy', type:'fill', text:'Para añadir <code>requests</code> como dependencia del proyecto: <code>uv ___ requests</code>',
+ answer:'add', exp:'<code>uv add requests</code> hace cinco cosas a la vez: crea el venv si no existe, descarga Python si falta, resuelve dependencias, instala todo y actualiza <code>pyproject.toml</code> + <code>uv.lock</code>.'},
+
+// M2 · Instalación y comandos diarios — comandos del día a día
+{level:'easy', type:'single', text:'Después de un <code>git pull</code> donde alguien añadió dependencias, ¿qué comando deja tu venv idéntico al lockfile?',
+ options:['uv install','uv sync','uv refresh','uv update'], answer:[1],
+ exp:'<code>uv sync</code> instala lo que falta, elimina lo que sobra y actualiza versiones para que tu <code>.venv/</code> coincida exactamente con <code>uv.lock</code>.'},
+
+{level:'easy', type:'single', text:'¿Qué hace <code>uv run main.py</code>?',
+ options:['Compila el script a binario','Ejecuta main.py dentro del venv del proyecto, sin necesidad de activarlo','Genera un archivo de configuración','Sube el script a la nube'], answer:[1],
+ exp:'<code>uv run</code> es la forma "correcta" de trabajar con uv: ejecuta cualquier comando dentro del entorno del proyecto sin que tengas que hacer <code>source .venv/bin/activate</code>.'},
+
+{level:'easy', type:'multi', text:'¿Cuáles son comandos válidos de uv? (selecciona todos los correctos)',
+ options:['uv add','uv remove','uv sync','uv tree','uv yeet'], answer:[0,1,2,3],
+ exp:'<code>uv yeet</code> no existe (todavía). Los otros cuatro son comandos diarios que vas a usar todo el tiempo.'},
+
+
+// ─── MEDIO · Módulos 3-4 (6 preguntas) ────────────────────────────
+
+// M3 · Python & entornos virtuales
+{level:'medium', type:'single', text:'¿Cómo descarga uv una versión específica de Python?',
+ options:['Compila Python desde código fuente, como pyenv','Descarga binarios oficiales precompilados (python-build-standalone)','Usa el Python del sistema','No puede descargar versiones de Python'], answer:[1],
+ exp:'uv descarga binarios precompilados — segundos en vez de minutos, sin necesidad de librerías de compilación del sistema. Es una gran ventaja sobre pyenv.'},
+
+{level:'medium', type:'tf', text:'Verdadero o Falso: <code>uv add</code> crea automáticamente el entorno virtual <code>.venv/</code> si no existe.',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. uv crea el venv solo, descarga Python si falta y lo mantiene sincronizado. <strong>No necesitas activarlo manualmente</strong> si usas <code>uv run</code>.'},
+
+{level:'medium', type:'fill', text:'El archivo que pinea la versión de Python al proyecto se llama: <code>.___-version</code>',
+ answer:'python', exp:'<code>.python-version</code> contiene la versión de Python a usar en el proyecto (ej. <code>3.12</code>). Si no la tienes, uv la descarga automáticamente la primera vez.'},
+
+// M4 · pyproject.toml & uv.lock
+{level:'medium', type:'single', text:'¿Cuál archivo registra las versiones EXACTAS de cada paquete y sub-paquete, con sus hashes?',
+ options:['pyproject.toml','uv.lock','requirements.txt','setup.cfg'], answer:[1],
+ exp:'<code>pyproject.toml</code> declara los rangos aceptados (las "especificaciones"). <code>uv.lock</code> es la orden de compra detallada: versiones resueltas + hashes. Garantiza reproducibilidad.'},
+
+{level:'medium', type:'single', text:'¿Qué hace <code>uv sync --frozen</code> y por qué es ideal para CI?',
+ options:['Acelera la instalación congelando el caché','Falla si el lockfile no está sincronizado con pyproject.toml — perfecto para detectar lockfiles desactualizados antes de desplegar','Comprime el venv','Convierte uv.lock a requirements.txt'], answer:[1],
+ exp:'En CI, <code>--frozen</code> evita que se modifique el lockfile silenciosamente. Si alguien hizo push de un <code>pyproject.toml</code> sin actualizar <code>uv.lock</code>, el build falla.'},
+
+{level:'medium', type:'tf', text:'Verdadero o Falso: <code>uv.lock</code> debería ir al control de versiones (commit + push).',
+ options:['Verdadero','Falso'], answer:[0],
+ exp:'Verdadero. Es la única forma de garantizar que tu compañero, tu CI y producción instalen <em>exactamente</em> los mismos paquetes que tú.'},
+
+
+// ─── EXPERTO · Módulo 5 (6 preguntas) ────────────────────────────
+
+// M5 · uv en producción — Parte A · Reemplazo del ecosistema
+{level:'expert', type:'single', text:'¿Cuál es el equivalente de <code>pipx</code> en uv?',
+ options:['uv pip','uv tool','uv exec','uv global'], answer:[1],
+ exp:'<code>uv tool install ruff</code> instala una CLI globalmente en su propio venv aislado. Para correr sin instalar: <code>uvx ruff check .</code> (alias de <code>uv tool run</code>).'},
+
+{level:'expert', type:'single', text:'¿Qué hace <code>uvx ruff check .</code>?',
+ options:['Instala ruff globalmente','Ejecuta ruff temporalmente sin instalarlo permanentemente — cero contaminación','Verifica que ruff esté instalado','Compila el código con ruff'], answer:[1],
+ exp:'<code>uvx</code> es alias de <code>uv tool run</code>: descarga ruff a un venv efímero (con caché), lo ejecuta y se olvida. Perfecto para uso puntual.'},
+
+{level:'expert', type:'single', text:'¿Cuál es la diferencia clave entre <code>uv pip install X</code> y <code>uv add X</code>?',
+ options:['Son idénticos','uv pip install es un wrapper compatible con pip y NO actualiza pyproject.toml ni uv.lock; uv add sí lo hace','uv pip install es más rápido','uv add no funciona con paquetes de PyPI'], answer:[1],
+ exp:'<code>uv pip</code> existe sólo para compatibilidad con scripts viejos. En proyectos modernos siempre usa <code>uv add</code>/<code>uv sync</code> para que el lockfile se mantenga.'},
+
+// M5 · uv en producción — Parte B · Workflows avanzados
+{level:'expert', type:'fill', text:'Los scripts auto-contenidos con dependencias declaradas dentro del archivo siguen el estándar PEP ___',
+ answer:'723', exp:'PEP 723 define la sintaxis de inline script metadata. uv lee el bloque <code># /// script</code> al inicio del archivo, prepara un venv efímero con las deps declaradas y ejecuta. Es la respuesta de Python a <code>npx</code>.'},
+
+{level:'expert', type:'multi', text:'¿Cuáles son buenas prácticas en un Dockerfile multi-stage con uv? (selecciona todas las correctas)',
+ options:['Usar la imagen oficial ghcr.io/astral-sh/uv como builder','Copiar pyproject.toml + uv.lock ANTES que el código fuente, para aprovechar el caché de capas','Ejecutar uv sync --frozen para garantizar reproducibilidad','Activar UV_COMPILE_BYTECODE=1 para mejorar el startup','Instalar uv vía pip dentro del contenedor final'], answer:[0,1,2,3],
+ exp:'Las primeras 4 son patrones recomendados. Instalar uv vía pip dentro del runtime es contraproducente: la imagen se infla y pierdes la ventaja de la imagen oficial pre-armada.'},
+
+{level:'expert', type:'single', text:'En la GitHub Action <code>astral-sh/setup-uv</code>, ¿qué hace <code>enable-cache: true</code>?',
+ options:['Activa el modo offline','Cachea el directorio global de uv (paquetes y Pythons), haciendo las corridas siguientes casi instantáneas','Encripta los logs','Permite usar caché privado de empresa'], answer:[1],
+ exp:'La action cachea <code>~/.cache/uv/</code> entre runs. La primera corrida descarga todo, las siguientes reutilizan caché y son segundos en vez de minutos. Esencial para CI rápido.'},
+
+];
+
+// ══════════════════════════════════════════════
+//  STATE + LÓGICA
+// ══════════════════════════════════════════════
+const activeQuestions = activeFilter === 'all'
+  ? questions
+  : questions.filter(q => q.level === activeFilter);
+
+let current = 0, score = 0, wrong = 0, skipped = 0;
+let answered = false;
+let selectedOptions = new Set();
+
+document.getElementById('q-total').textContent = activeQuestions.length;
+
+function renderQuestion() {
+  answered = false;
+  const q = activeQuestions[current];
+  updateHeader();
+
+  const container = document.getElementById('question-container');
+
+  const levelColors = { easy:'var(--easy)', medium:'var(--medium)', expert:'var(--expert)' };
+  const levelLabels = { easy:'Fácil', medium:'Medio', expert:'Experto' };
+  const typeLabels  = { single:'Opción única', multi:'Opción múltiple', tf:'Verdadero/Falso', fill:'Completar' };
+
+  let optionsHTML = '';
+
+  if (q.type === 'fill') {
+    optionsHTML = `<input class="fill-input" id="fill-input" placeholder="Escribe tu respuesta aquí..." autocomplete="off" spellcheck="false">`;
+  } else {
+    const keys = ['A','B','C','D','E','F'];
+    if (q.type === 'multi') {
+      optionsHTML += `<div class="multi-hint">⚡ Selecciona todas las correctas</div>`;
+    }
+    optionsHTML += '<div class="options">';
+    q.options.forEach((opt, i) => {
+      optionsHTML += `
+        <div class="option" id="opt-${i}" onclick="selectOption(${i})">
+          <div class="opt-key">${keys[i]}</div>
+          <div class="opt-text">${opt}</div>
+        </div>`;
+    });
+    optionsHTML += '</div>';
+  }
+
+  container.innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">Pregunta ${current + 1}</span>
+        <span class="q-type">${typeLabels[q.type]}</span>
+        <span class="q-level" style="color:${levelColors[q.level]};background:${levelColors[q.level]}18;border:1px solid ${levelColors[q.level]}44">${levelLabels[q.level]}</span>
+      </div>
+      <div class="q-text">${q.text}</div>
+      ${optionsHTML}
+      <div class="feedback" id="feedback"></div>
+      <div class="q-actions">
+        <button class="btn btn-confirm" id="btn-confirm" onclick="confirmAnswer()">Confirmar</button>
+        <button class="btn btn-next" id="btn-next" onclick="nextQuestion()" style="display:none">Siguiente →</button>
+        <button class="btn btn-skip" id="btn-skip" onclick="skipQuestion()">Omitir</button>
+      </div>
+    </div>`;
+
+  if (q.type === 'fill') {
+    const inp = document.getElementById('fill-input');
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') confirmAnswer(); });
+    inp.focus();
+  }
+}
+
+function selectOption(i) {
+  if (answered) return;
+  const q = activeQuestions[current];
+  const opt = document.getElementById(`opt-${i}`);
+
+  if (q.type === 'multi') {
+    if (selectedOptions.has(i)) {
+      selectedOptions.delete(i);
+      opt.classList.remove('selected');
+    } else {
+      selectedOptions.add(i);
+      opt.classList.add('selected');
+    }
+  } else {
+    selectedOptions.clear();
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    selectedOptions.add(i);
+    opt.classList.add('selected');
+  }
+}
+
+function confirmAnswer() {
+  if (answered) return;
+  const q = activeQuestions[current];
+  const fb = document.getElementById('feedback');
+  answered = true;
+
+  let isCorrect = false;
+
+  if (q.type === 'fill') {
+    const val = document.getElementById('fill-input').value.trim().toLowerCase();
+    const ans = q.answer.toLowerCase();
+    isCorrect = val === ans;
+    const inp = document.getElementById('fill-input');
+    inp.classList.add(isCorrect ? 'correct' : 'wrong');
+    inp.disabled = true;
+  } else {
+    const correctSet = new Set(q.answer);
+    const selected = selectedOptions;
+    if (selected.size === 0) { answered = false; return; }
+
+    q.options.forEach((_, i) => {
+      const el = document.getElementById(`opt-${i}`);
+      el.classList.add('disabled');
+      if (correctSet.has(i) && selected.has(i)) el.classList.add('correct');
+      else if (correctSet.has(i))               el.classList.add('correct');
+      else if (selected.has(i))                 el.classList.add('wrong');
+    });
+
+    if (q.type === 'multi') {
+      isCorrect = correctSet.size === selected.size && [...selected].every(x => correctSet.has(x));
+    } else {
+      isCorrect = selected.size === 1 && correctSet.has([...selected][0]);
+    }
+  }
+
+  selectedOptions = new Set();
+
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback ok show';
+    fb.innerHTML = `✓ ¡Correcto! &nbsp;${q.exp}`;
+  } else {
+    wrong++;
+    fb.className = 'feedback err show';
+    const correctAnswers = q.type === 'fill'
+      ? `<code>${q.answer}</code>`
+      : q.answer.map(i => `<strong>${q.options[i]}</strong>`).join(', ');
+    fb.innerHTML = `✗ Incorrecto. Respuesta: ${correctAnswers} &nbsp;—&nbsp; ${q.exp}`;
+  }
+
+  document.getElementById('btn-confirm').style.display = 'none';
+  document.getElementById('btn-skip').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'inline-flex';
+  updateHeader();
+}
+
+function skipQuestion() {
+  skipped++;
+  nextQuestion();
+}
+
+function nextQuestion() {
+  selectedOptions = new Set();
+  current++;
+  if (current >= activeQuestions.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function updateHeader() {
+  document.getElementById('q-num').textContent = current + 1;
+  const pct = (current / activeQuestions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function finishQuiz() {
+  // Persistir resultados y navegar a la página de resultados
+  const payload = {
+    filter: activeFilter,
+    total:  activeQuestions.length,
+    score, wrong, skipped
+  };
+  localStorage.setItem(STORAGE_RESULTS, JSON.stringify(payload));
+  window.location.href = 'uv-quiz-resultado.html';
+}
+
+// ══════════════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  // Avoid hijacking when typing in input
+  const inputFocused = document.activeElement && document.activeElement.tagName === 'INPUT';
+  if (inputFocused && e.key !== 'Enter') return;
+
+  if (!answered && /^[1-6]$/.test(e.key)) {
+    const idx = parseInt(e.key, 10) - 1;
+    const opt = document.getElementById(`opt-${idx}`);
+    if (opt) selectOption(idx);
+    return;
+  }
+
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (!answered) {
+      const q = activeQuestions[current];
+      if (q.type === 'fill' || selectedOptions.size > 0) confirmAnswer();
+    } else {
+      nextQuestion();
+    }
+    return;
+  }
+
+  if (!answered && (e.key === 's' || e.key === 'S')) {
+    skipQuestion();
+  }
+});
+
+// Iniciar
+renderQuestion();
+</script>
+</body>
+</html>

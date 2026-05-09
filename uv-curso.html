@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>uv — Curso Completo (gestor de paquetes de Python)</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --accent: #f78166;
+    --accent2: #79c0ff;
+    --accent3: #56d364;
+    --warn: #d29922;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --easy: #56d364;
+    --medium: #e3b341;
+    --expert: #bc8cff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(121,192,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(121,192,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .topbar-left, .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .tb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    transition: color 0.15s;
+  }
+  .tb-link:hover { color: var(--accent2); }
+  .tb-link svg { width: 14px; height: 14px; }
+
+  .tb-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .tb-title .uv { color: var(--accent); }
+  .tb-title .py { color: var(--accent2); }
+
+  .tb-quiz {
+    background: var(--accent);
+    color: #0d1117;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .tb-quiz:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(247,129,102,0.35); }
+
+  /* ── LAYOUT ── */
+  .layout {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding: 32px 0;
+  }
+
+  .sb-section {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+  }
+
+  .sb-group {
+    margin-bottom: 18px;
+  }
+
+  .sb-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+    padding-left: 12px;
+  }
+  .sb-group-title .dot-lv { width: 8px; height: 8px; border-radius: 50%; }
+  .sb-group-title.easy   { color: var(--easy);   } .sb-group-title.easy   .dot-lv { background: var(--easy); }
+  .sb-group-title.medium { color: var(--medium); } .sb-group-title.medium .dot-lv { background: var(--medium); }
+  .sb-group-title.expert { color: var(--expert); } .sb-group-title.expert .dot-lv { background: var(--expert); }
+
+  .sb-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sb-link {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sb-link:hover { color: var(--text); background: var(--surface); }
+  .sb-link.active {
+    color: var(--accent2);
+    background: rgba(121,192,255,0.08);
+    border-left-color: var(--accent2);
+  }
+
+  .sb-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    opacity: 0.7;
+  }
+
+  .sb-quiz-cta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(247,129,102,0.12), rgba(247,129,102,0.04));
+    border: 1px solid rgba(247,129,102,0.3);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.15s;
+    margin-top: 18px;
+  }
+  .sb-quiz-cta:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .sb-quiz-cta svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+  .sb-quiz-cta-label { font-size: 0.7rem; color: var(--muted); display: block; }
+  .sb-quiz-cta-title { font-size: 0.88rem; font-weight: 700; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 48px 0 96px;
+    max-width: 780px;
+  }
+
+  .hero {
+    margin-bottom: 56px;
+  }
+
+  .terminal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent3);
+    margin-bottom: 24px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+
+  h1.hero-title {
+    font-size: clamp(1.85rem, 4vw, 3rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+  }
+  h1.hero-title .uv { color: var(--accent); }
+  h1.hero-title .py { color: var(--accent2); }
+  h1.hero-title .sub {
+    display: block;
+    color: var(--text);
+    font-size: 0.55em;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+
+  .hero-lead {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 620px;
+    margin-bottom: 28px;
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .hs-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 22px;
+  }
+  .hs-card .num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent2);
+    line-height: 1;
+  }
+  .hs-card .lbl {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* ── TOC OVERVIEW ── */
+  .toc-overview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 64px;
+  }
+  .toc-overview-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 18px;
+  }
+  .toc-levels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .toc-level {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    border-top: 3px solid;
+  }
+  .toc-level.easy   { border-top-color: var(--easy); }
+  .toc-level.medium { border-top-color: var(--medium); }
+  .toc-level.expert { border-top-color: var(--expert); }
+
+  .toc-level-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .toc-level-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .toc-level.easy   .toc-level-name { color: var(--easy); }
+  .toc-level.medium .toc-level-name { color: var(--medium); }
+  .toc-level.expert .toc-level-name { color: var(--expert); }
+  .toc-level-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  .toc-level-mods {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toc-level-mods li a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: flex;
+    gap: 8px;
+    transition: color 0.15s;
+  }
+  .toc-level-mods li a:hover { color: var(--accent2); }
+  .toc-level-mods li a span.n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    flex-shrink: 0;
+    min-width: 22px;
+  }
+
+  /* ── LEVEL DIVIDER ── */
+  .level-divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 80px 0 40px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 80px;
+  }
+  .level-divider:first-of-type { margin-top: 24px; }
+
+  .level-divider-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: 1.5px solid;
+  }
+  .level-divider-badge .pill { width: 8px; height: 8px; border-radius: 50%; }
+  .level-divider-badge.easy   { color: var(--easy);   border-color: var(--easy);   background: rgba(86,211,100,0.06); }
+  .level-divider-badge.easy   .pill { background: var(--easy); }
+  .level-divider-badge.medium { color: var(--medium); border-color: var(--medium); background: rgba(227,179,65,0.06); }
+  .level-divider-badge.medium .pill { background: var(--medium); }
+  .level-divider-badge.expert { color: var(--expert); border-color: var(--expert); background: rgba(188,140,255,0.06); }
+  .level-divider-badge.expert .pill { background: var(--expert); }
+
+  .level-divider-text {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── MODULES ── */
+  .module {
+    margin-bottom: 72px;
+    scroll-margin-top: 80px;
+  }
+
+  .module-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .module-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent2);
+    background: rgba(121,192,255,0.08);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(121,192,255,0.2);
+  }
+
+  .module-level {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1.5px solid;
+  }
+  .lv-easy   { color: var(--easy);   border-color: var(--easy);   background: rgba(86,211,100,0.08); }
+  .lv-medium { color: var(--medium); border-color: var(--medium); background: rgba(227,179,65,0.08); }
+  .lv-expert { color: var(--expert); border-color: var(--expert); background: rgba(188,140,255,0.08); }
+
+  .module h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+  }
+
+  .module .lead {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  .module h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin: 32px 0 10px;
+    line-height: 1.4;
+  }
+
+  .module h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 18px 0 8px;
+  }
+
+  .module p {
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    margin-bottom: 14px;
+  }
+
+  .module ul, .module ol {
+    margin: 12px 0 18px 22px;
+    color: var(--text);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .module li { margin-bottom: 6px; }
+  .module li::marker { color: var(--accent2); }
+
+  /* Code */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    overflow-x: auto;
+    margin: 16px 0 22px;
+    position: relative;
+  }
+  pre.shell::before {
+    content: '$';
+    position: absolute;
+    top: 18px;
+    left: 22px;
+    color: var(--accent3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  pre.shell code { padding-left: 18px; }
+
+  pre.file {
+    padding-top: 38px;
+  }
+  pre.file::before {
+    content: attr(data-file);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    border-radius: 10px 10px 0 0;
+    padding: 8px 22px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text);
+    font-size: 0.85rem;
+    display: block;
+    white-space: pre;
+  }
+
+  /* Callouts */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--accent2); }
+  .callout.tip { border-left-color: var(--accent3); }
+  .callout.tip strong { color: var(--accent3); }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.warn strong { color: var(--warn); }
+
+  /* Caja de analogía didáctica — distintiva para que destaque */
+  .example-box {
+    background: linear-gradient(135deg, rgba(247,129,102,0.10), rgba(247,129,102,0.02));
+    border: 1px solid rgba(247,129,102,0.35);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin: 24px 0;
+  }
+  .example-box-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+  }
+  .example-box-title svg { width: 18px; height: 18px; }
+  .example-box p { color: var(--text); margin-bottom: 12px; }
+  .example-box ul {
+    list-style: none;
+    margin: 14px 0 4px 0 !important;
+    padding: 0;
+  }
+  .example-box ul li {
+    padding: 10px 0 10px 14px;
+    position: relative;
+    border-top: 1px dashed rgba(247,129,102,0.2);
+  }
+  .example-box ul li:first-child { border-top: none; }
+  .example-box ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .example-box ul li strong { color: var(--accent); }
+
+  /* Checkpoint */
+  .checkpoint {
+    background: linear-gradient(135deg, rgba(86,211,100,0.07), rgba(86,211,100,0.02));
+    border: 1px solid rgba(86,211,100,0.25);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 28px;
+  }
+  .checkpoint-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent3);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 10px;
+  }
+  .checkpoint-title svg { width: 16px; height: 16px; }
+  .checkpoint ul {
+    margin: 0 0 0 20px;
+    font-size: 0.9rem;
+  }
+  .checkpoint ul li::marker { color: var(--accent3); }
+  .checkpoint ul li { margin-bottom: 4px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 0.88rem;
+  }
+  th, td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  th {
+    background: var(--surface);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  td { background: var(--surface2); color: var(--text); }
+
+  /* Steps numerados */
+  .steps {
+    counter-reset: step;
+    list-style: none !important;
+    margin-left: 0 !important;
+    padding: 0;
+  }
+  .steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 18px 20px 18px 64px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .steps > li::before {
+    content: counter(step);
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(121,192,255,0.12);
+    border: 1.5px solid var(--accent2);
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps > li > p:first-child {
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .steps > li pre { margin-top: 12px; margin-bottom: 8px; }
+
+  .practical-block {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--border);
+  }
+  .practical-block:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  /* Final CTA */
+  .final-cta {
+    background: linear-gradient(135deg, var(--surface), rgba(247,129,102,0.06));
+    border: 1px solid rgba(247,129,102,0.3);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 64px;
+  }
+  .final-cta h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .final-cta p {
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 24px;
+    line-height: 1.6;
+  }
+  .btn-quiz {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 36px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-quiz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(247,129,102,0.35);
+  }
+  .btn-quiz svg { width: 18px; height: 18px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .sidebar {
+      position: static;
+      height: auto;
+      padding: 20px 0;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sb-group { margin-bottom: 14px; }
+    .sb-nav { flex-direction: row; flex-wrap: wrap; }
+    .sb-link { padding: 6px 10px; font-size: 0.78rem; border-left: none; border-bottom: 2px solid transparent; }
+    .sb-link.active { border-left: none; border-bottom-color: var(--accent2); }
+    .sb-quiz-cta { display: none; }
+    .toc-levels { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 12px 16px; }
+    .tb-link span { display: none; }
+    .layout { padding: 0 16px; }
+    .module h2 { font-size: 1.5rem; }
+    .final-cta { padding: 28px 20px; }
+    .toc-overview { padding: 20px; }
+    .level-divider { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .example-box { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="aprendizaje.html" class="tb-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span>Centro de Aprendizaje</span>
+    </a>
+  </div>
+  <div class="tb-title"><span class="uv">uv</span> · <span class="py">Python</span></div>
+  <div class="topbar-right">
+    <a href="uv-quiz.html" class="tb-quiz">Tomar Quiz →</a>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="sb-section">Contenido del curso</div>
+
+    <div class="sb-group">
+      <div class="sb-group-title easy"><span class="dot-lv"></span>Fácil</div>
+      <nav class="sb-nav">
+        <a href="#m1" class="sb-link active"><span class="sb-num">01</span><span>¿Qué es uv?</span></a>
+        <a href="#m2" class="sb-link"><span class="sb-num">02</span><span>Instalación &amp; comandos diarios</span></a>
+      </nav>
+    </div>
+
+    <div class="sb-group">
+      <div class="sb-group-title medium"><span class="dot-lv"></span>Medio</div>
+      <nav class="sb-nav">
+        <a href="#m3" class="sb-link"><span class="sb-num">03</span><span>Python &amp; entornos</span></a>
+        <a href="#m4" class="sb-link"><span class="sb-num">04</span><span>pyproject.toml &amp; lockfile</span></a>
+      </nav>
+    </div>
+
+    <div class="sb-group">
+      <div class="sb-group-title expert"><span class="dot-lv"></span>Experto</div>
+      <nav class="sb-nav">
+        <a href="#m5" class="sb-link"><span class="sb-num">05</span><span>uv en producción</span></a>
+      </nav>
+    </div>
+
+    <a href="uv-quiz.html" class="sb-quiz-cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <div>
+        <span class="sb-quiz-cta-label">Cuando estés listo</span>
+        <span class="sb-quiz-cta-title">Toma el Quiz (20p)</span>
+      </div>
+    </a>
+  </aside>
+
+  <!-- ═══ CONTENT ═══ -->
+  <main class="content">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="terminal-badge">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        &nbsp;curso-uv --niveles=3 --modulos=5 --quiz=20
+      </div>
+      <h1 class="hero-title">
+        <span class="uv">uv</span> · <span class="py">Python</span>
+        <span class="sub">El gestor de paquetes moderno</span>
+      </h1>
+      <p class="hero-lead">
+        <code>uv</code> es el gestor de paquetes y proyectos de Python que reemplaza a <code>pip</code>,
+        <code>pip-tools</code>, <code>pipx</code>, <code>poetry</code>, <code>pyenv</code> y <code>virtualenv</code>
+        — todo en un solo binario escrito en Rust, entre <strong>10 y 100× más rápido</strong>.
+        Este curso te lleva desde una analogía simple (construcción) hasta los workflows expertos en CI/CD.
+      </p>
+      <div class="hero-stats">
+        <div class="hs-card"><div class="num">3</div><div class="lbl">Niveles</div></div>
+        <div class="hs-card"><div class="num">5</div><div class="lbl">Módulos</div></div>
+        <div class="hs-card"><div class="num">20</div><div class="lbl">Preguntas</div></div>
+        <div class="hs-card"><div class="num">~2h</div><div class="lbl">Lectura</div></div>
+      </div>
+    </section>
+
+    <!-- ═══ TOC OVERVIEW ═══ -->
+    <section class="toc-overview">
+      <div class="toc-overview-title">Índice del curso</div>
+      <div class="toc-levels">
+
+        <div class="toc-level easy">
+          <div class="toc-level-head">
+            <span class="toc-level-name">Fácil</span>
+            <span class="toc-level-count">2 módulos</span>
+          </div>
+          <ul class="toc-level-mods">
+            <li><a href="#m1"><span class="n">01</span>¿Qué es uv? (con analogía)</a></li>
+            <li><a href="#m2"><span class="n">02</span>Instalación y comandos diarios</a></li>
+          </ul>
+        </div>
+
+        <div class="toc-level medium">
+          <div class="toc-level-head">
+            <span class="toc-level-name">Medio</span>
+            <span class="toc-level-count">2 módulos</span>
+          </div>
+          <ul class="toc-level-mods">
+            <li><a href="#m3"><span class="n">03</span>Python &amp; entornos virtuales</a></li>
+            <li><a href="#m4"><span class="n">04</span>pyproject.toml &amp; uv.lock</a></li>
+          </ul>
+        </div>
+
+        <div class="toc-level expert">
+          <div class="toc-level-head">
+            <span class="toc-level-name">Experto</span>
+            <span class="toc-level-count">1 módulo</span>
+          </div>
+          <ul class="toc-level-mods">
+            <li><a href="#m5"><span class="n">05</span>uv en producción (ecosistema + workflows)</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- ═══════════ NIVEL FÁCIL ════════════════ -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="level-divider" id="nivel-facil">
+      <span class="level-divider-badge easy"><span class="pill"></span>Nivel Fácil</span>
+      <span class="level-divider-text">Lo mínimo para entender qué es uv y empezar a usarlo hoy.</span>
+    </div>
+
+    <!-- ─── MÓDULO 1 ─── -->
+    <article class="module" id="m1">
+      <div class="module-meta">
+        <span class="module-num">Módulo 01</span>
+        <span class="module-level lv-easy">Fácil</span>
+      </div>
+      <h2>¿Qué es uv y por qué existe?</h2>
+      <p class="lead">Antes de tocar un comando, entiende el problema que resuelve. Vamos a explicarlo de dos formas: primero con una analogía sencilla para que cualquiera lo entienda, y luego con la versión técnica.</p>
+
+      <h3>El problema en una frase</h3>
+      <p>Los proyectos de Python necesitan <strong>paquetes externos</strong> (librerías como <code>pandas</code>, <code>requests</code>, <code>numpy</code>). Instalar esos paquetes, fijar sus versiones exactas, aislarlos por proyecto y mantener todo reproducible siempre fue lento, frágil y necesitaba combinar varias herramientas distintas.</p>
+
+      <p><code>uv</code> hace todo eso, en un solo binario, increíblemente rápido.</p>
+
+      <!-- ═══ ANALOGÍA SIMPLE: CONSTRUCCIÓN ═══ -->
+      <div class="example-box">
+        <div class="example-box-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01"/></svg>
+          Explicado con una analogía simple (para alguien que nunca tocó Python)
+        </div>
+
+        <p>Imagina que diriges la <strong>construcción de varios edificios al mismo tiempo</strong>, cada uno para un cliente distinto. Cada obra tiene su propio diseño, requiere materiales específicos, debe construirse con sus equipos y bodegas aislados de las demás obras, y debe poder reproducirse <em>al milímetro</em> si años después el cliente pide una copia idéntica.</p>
+
+        <p>En esta operación:</p>
+        <ul>
+          <li>Un <strong>material de construcción</strong> (concreto, acero estructural, vidrio templado) = un paquete de Python (ej: <code>pandas</code>, <code>requests</code>, <code>numpy</code>).</li>
+          <li>Una <strong>obra</strong> = un proyecto de Python (tu app, tu API, tu modelo de ML).</li>
+          <li>Las <strong>especificaciones técnicas</strong> del proyecto &mdash;planos y memoria descriptiva&mdash; = el archivo <code>pyproject.toml</code>. Describe qué necesitas en términos generales: <em>"concreto resistencia 250 kg/cm²"</em>, <em>"requests versión 2 o superior"</em>.</li>
+          <li>La <strong>orden de compra detallada</strong> con proveedor, número de lote y certificados de calidad = el archivo <code>uv.lock</code>. Versiones precisas de cada paquete y de los paquetes que ESOS paquetes requieren, para que la obra sea reproducible idéntica siempre.</li>
+          <li>La <strong>bodega de obra dedicada</strong> donde se almacenan SOLO los materiales de UN edificio, sin mezclar con los de otra obra = un <strong>entorno virtual</strong> (la carpeta <code>.venv</code> dentro del proyecto).</li>
+          <li>La <strong>maquinaria base</strong> sobre la que opera todo el equipo &mdash;grúas, andamios, sistema eléctrico de obra&mdash; = la versión de Python (3.11, 3.12, etc.). Cada obra puede requerir un equipamiento distinto.</li>
+          <li><strong>uv</strong> = el contratista general que coordina todo: levanta órdenes a proveedores, recibe los materiales, los acomoda en la bodega correcta de cada obra, instala la maquinaria base y deja la cancha lista para que la cuadrilla construya. Y lo hace ~10–100× más rápido que el contratista anterior (<code>pip</code>).</li>
+        </ul>
+
+        <p style="margin-top: 14px;">Antes de uv tenías que coordinar varios proveedores especializados: uno para los materiales (<code>pip</code>), otro para asignar bodegas (<code>virtualenv</code>), otro para conseguir la maquinaria base correcta (<code>pyenv</code>), otro para registrar los lotes exactos (<code>pip-tools</code>) y otro para la herramienta de cuadrilla (<code>pipx</code>). <strong>uv hace todo eso solo, en un solo binario.</strong></p>
+      </div>
+
+      <h3>Versión técnica</h3>
+      <p>uv es una herramienta de línea de comandos escrita en <strong>Rust</strong>, mantenida por <a href="https://astral.sh" target="_blank" style="color: var(--accent3); text-decoration: underline;">Astral</a> (los mismos creadores de <code>ruff</code>). Cubre tres responsabilidades:</p>
+      <ol>
+        <li><strong>Resolver e instalar dependencias:</strong> reemplaza a <code>pip</code> y <code>pip-tools</code>.</li>
+        <li><strong>Gestionar entornos virtuales:</strong> reemplaza a <code>virtualenv</code> y <code>venv</code>.</li>
+        <li><strong>Gestionar versiones de Python:</strong> reemplaza a <code>pyenv</code> (descarga binarios oficiales precompilados).</li>
+      </ol>
+      <p>Adicionalmente cubre la instalación de herramientas CLI (<code>uv tool</code>, en lugar de <code>pipx</code>) y la gestión completa de proyectos al estilo poetry (<code>uv add</code>, <code>uv sync</code>, <code>uv lock</code>).</p>
+
+      <h3>¿Por qué es tan rápido?</h3>
+      <ul>
+        <li>Está escrito en Rust con paralelismo agresivo.</li>
+        <li>Usa un caché global con <strong>hardlinks/copy-on-write</strong>: si ya descargaste <code>numpy 1.26</code> en otro proyecto, no lo descarga de nuevo, lo enlaza.</li>
+        <li>El resolutor de dependencias (PubGrub) detecta conflictos sin hacer descargas innecesarias.</li>
+      </ul>
+
+      <h4>Comparativa típica</h4>
+      <table>
+        <thead><tr><th>Operación</th><th>pip</th><th>uv</th></tr></thead>
+        <tbody>
+          <tr><td>Crear venv + instalar Django</td><td>~6 s</td><td>&lt; 1 s</td></tr>
+          <tr><td>Resolver e instalar 100 paquetes</td><td>30–60 s</td><td>1–3 s</td></tr>
+          <tr><td>Cold install (sin caché) de un proyecto medio</td><td>40–90 s</td><td>3–8 s</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> los números dependen de tu máquina y red, pero el orden de magnitud (10–100×) se mantiene. La diferencia se siente sobre todo en CI/CD, donde cada segundo cuenta.
+      </div>
+
+      <div class="checkpoint">
+        <div class="checkpoint-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Qué deberías poder hacer ahora
+        </div>
+        <ul>
+          <li>Explicar con tus propias palabras (o con la analogía de la construcción) qué hace uv</li>
+          <li>Saber qué herramientas tradicionales reemplaza</li>
+          <li>Entender por qué es 10–100× más rápido que pip</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 2 ─── -->
+    <article class="module" id="m2">
+      <div class="module-meta">
+        <span class="module-num">Módulo 02</span>
+        <span class="module-level lv-easy">Fácil</span>
+      </div>
+      <h2>Instalación y comandos diarios</h2>
+      <p class="lead">De cero a un proyecto Python funcionando — y los comandos que vas a usar el 95% del tiempo después. Sin Python instalado previamente: uv mismo lo descarga.</p>
+
+      <h3>Instalar uv</h3>
+      <p>uv se distribuye como un binario único, sin dependencias. Elige según tu sistema:</p>
+
+      <h4>macOS / Linux</h4>
+      <pre class="shell"><code>curl -LsSf https://astral.sh/uv/install.sh | sh</code></pre>
+
+      <h4>Windows (PowerShell)</h4>
+      <pre class="shell"><code>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></pre>
+
+      <h4>Vía Homebrew (macOS)</h4>
+      <pre class="shell"><code>brew install uv</code></pre>
+
+      <h4>Vía pipx (si ya tienes Python)</h4>
+      <pre class="shell"><code>pipx install uv</code></pre>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> el script oficial <code>install.sh</code> coloca uv en <code>~/.local/bin/</code> y no requiere sudo. Reinicia tu terminal o haz <code>source ~/.bashrc</code> después de instalar.
+      </div>
+
+      <h3>Verificar la instalación</h3>
+      <pre class="shell"><code>uv --version
+# uv 0.5.x</code></pre>
+
+      <h3>Crear tu primer proyecto</h3>
+      <p>Un solo comando crea un proyecto completo, con su <code>pyproject.toml</code>, su <code>.python-version</code> y un <code>README.md</code>:</p>
+
+      <pre class="shell"><code>uv init mi-proyecto
+cd mi-proyecto</code></pre>
+
+      <p>Esto genera la siguiente estructura:</p>
+
+      <pre class="file" data-file="mi-proyecto/"><code>mi-proyecto/
+├── .python-version       # versión de Python a usar (ej. 3.12)
+├── pyproject.toml        # las "especificaciones": metadata + dependencias
+├── README.md
+├── main.py               # un script de ejemplo: print("Hello!")
+└── .gitignore</code></pre>
+
+      <p>El <code>pyproject.toml</code> que crea es mínimo y limpio:</p>
+
+      <pre class="file" data-file="pyproject.toml"><code>[project]
+name = "mi-proyecto"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "&gt;=3.12"
+dependencies = []</code></pre>
+
+      <h3>Añadir tu primera dependencia</h3>
+      <p>Vamos a instalar <code>requests</code> (la librería para hacer HTTP en Python):</p>
+
+      <pre class="shell"><code>uv add requests</code></pre>
+
+      <p>Esto, en un solo comando, hace <strong>cinco cosas</strong>:</p>
+      <ol>
+        <li>Crea automáticamente un entorno virtual <code>.venv/</code> si no existe.</li>
+        <li>Descarga la versión de Python correcta (si no la tienes).</li>
+        <li>Resuelve <code>requests</code> y todas sus dependencias.</li>
+        <li>Las instala en <code>.venv/</code>.</li>
+        <li>Añade <code>requests</code> a <code>pyproject.toml</code> y bloquea las versiones exactas en <code>uv.lock</code>.</li>
+      </ol>
+
+      <h3>Ejecutar código con <code>uv run</code></h3>
+      <p>No necesitas activar el venv manualmente. <code>uv run</code> ejecuta cualquier comando dentro del entorno del proyecto:</p>
+
+      <pre class="shell"><code>uv run main.py
+# Hello from mi-proyecto!
+
+uv run python -c "import requests; print(requests.__version__)"
+# 2.32.3</code></pre>
+
+      <div class="callout">
+        <strong>El "modo correcto" de trabajar con uv</strong> es no preocuparte por activar el venv. <code>uv run</code> y <code>uv sync</code> son tus dos comandos principales. El venv existe en <code>.venv/</code> y está siempre sincronizado.
+      </div>
+
+      <h3 style="margin-top: 40px; padding-top: 28px; border-top: 1px dashed var(--border);">Comandos básicos diarios</h3>
+      <p>Los seis comandos de uv que vas a usar el 95% del tiempo. Memorízalos — son tu pan de cada día.</p>
+
+      <h4>Tabla resumen</h4>
+      <table>
+        <thead><tr><th>Comando</th><th>Para qué sirve</th></tr></thead>
+        <tbody>
+          <tr><td><code>uv add &lt;paquete&gt;</code></td><td>Añadir una dependencia al proyecto</td></tr>
+          <tr><td><code>uv remove &lt;paquete&gt;</code></td><td>Quitar una dependencia</td></tr>
+          <tr><td><code>uv sync</code></td><td>Sincronizar el venv con el lockfile (tras git pull)</td></tr>
+          <tr><td><code>uv run &lt;cmd&gt;</code></td><td>Ejecutar un comando dentro del venv del proyecto</td></tr>
+          <tr><td><code>uv lock</code></td><td>Regenerar el lockfile sin instalar nada</td></tr>
+          <tr><td><code>uv tree</code></td><td>Ver el árbol de dependencias del proyecto</td></tr>
+        </tbody>
+      </table>
+
+      <h3>uv add — más opciones útiles</h3>
+      <pre class="shell"><code># Añadir varias a la vez
+uv add fastapi pydantic httpx
+
+# Versión específica
+uv add "django&gt;=5.0,&lt;6"
+
+# Como dependencia de desarrollo (no se instala en producción)
+uv add --dev pytest ruff mypy
+
+# Desde un repositorio Git
+uv add "git+https://github.com/usuario/repo.git"
+
+# Desde un archivo local
+uv add ./mi-otro-paquete</code></pre>
+
+      <p>En la analogía de la construcción: <code>uv add</code> es darle al contratista una orden &mdash; <em>"añade este material a la lista y consíguelo"</em>. Las dependencias <code>--dev</code> son la maquinaria y herramienta de obra que necesitas para construir pero que no quedan dentro del edificio (andamios, encofrados, equipo de medición).</p>
+
+      <h3>uv sync — la operación que más vas a usar</h3>
+      <p>Después de un <code>git pull</code> donde alguien añadió o cambió dependencias, una sola palabra deja tu venv idéntico al de tus compañeros:</p>
+
+      <pre class="shell"><code>uv sync</code></pre>
+
+      <p>Esto:</p>
+      <ul>
+        <li>Lee <code>uv.lock</code> y se asegura de que tu <code>.venv/</code> tenga exactamente esos paquetes.</li>
+        <li>Instala lo que falta, elimina lo que sobra y actualiza lo que tenga la versión incorrecta.</li>
+        <li>Si <code>pyproject.toml</code> cambió pero <code>uv.lock</code> no se ha regenerado, lo hace automáticamente.</li>
+      </ul>
+
+      <h3>uv run — más allá de scripts simples</h3>
+      <pre class="shell"><code># Ejecutar un script
+uv run main.py
+
+# Ejecutar con flags de Python
+uv run python -m http.server
+
+# Ejecutar pytest, ruff, etc. (si están como --dev)
+uv run pytest
+uv run ruff check .
+
+# Ejecutar con dependencias temporales (no añadidas al proyecto)
+uv run --with rich main.py</code></pre>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> <code>uv run --with X</code> es perfecto para probar una librería sin contaminar tu proyecto. La instala temporalmente, ejecuta y se olvida.
+      </div>
+
+      <h3>Ver qué tienes instalado: <code>uv tree</code></h3>
+      <pre class="shell"><code>uv tree
+# mi-proyecto v0.1.0
+# └── requests v2.32.3
+#     ├── certifi v2024.7.4
+#     ├── charset-normalizer v3.3.2
+#     ├── idna v3.7
+#     └── urllib3 v2.2.2</code></pre>
+
+      <p>Útil cuando un paquete actualiza algo y rompe la compatibilidad con otro: el árbol te muestra quién depende de qué.</p>
+
+      <h3>Actualizar dependencias</h3>
+      <pre class="shell"><code>uv lock --upgrade               # actualiza TODO al máximo permitido
+uv lock --upgrade-package requests  # actualiza solo requests
+uv sync                          # aplica los cambios al venv</code></pre>
+
+      <div class="callout warn">
+        <strong>Cuidado:</strong> <code>--upgrade</code> respeta los rangos definidos en <code>pyproject.toml</code>. Si quieres ir más allá del rango, edita primero el rango en <code>pyproject.toml</code>.
+      </div>
+
+      <div class="checkpoint">
+        <div class="checkpoint-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Qué deberías poder hacer ahora
+        </div>
+        <ul>
+          <li>Instalar uv en tu sistema operativo y crear un proyecto con <code>uv init</code></li>
+          <li>Añadir y quitar dependencias del proyecto</li>
+          <li>Sincronizar tu venv después de un <code>git pull</code></li>
+          <li>Ejecutar scripts y herramientas con <code>uv run</code> sin activar el venv</li>
+          <li>Inspeccionar el árbol de dependencias y actualizarlas con seguridad</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- ═══════════ NIVEL MEDIO ════════════════ -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="level-divider" id="nivel-medio">
+      <span class="level-divider-badge medium"><span class="pill"></span>Nivel Medio</span>
+      <span class="level-divider-text">Cómo uv gestiona Python, los entornos y la reproducibilidad de tu proyecto.</span>
+    </div>
+
+    <!-- ─── MÓDULO 3 ─── -->
+    <article class="module" id="m3">
+      <div class="module-meta">
+        <span class="module-num">Módulo 03</span>
+        <span class="module-level lv-medium">Medio</span>
+      </div>
+      <h2>Python y entornos virtuales</h2>
+      <p class="lead">uv no se limita a paquetes. También descarga y gestiona versiones de Python, y crea/limpia los entornos virtuales por ti.</p>
+
+      <h3>uv descarga Python por ti</h3>
+      <p>A diferencia de pip, uv puede descargar binarios oficiales de Python (de <a href="https://github.com/astral-sh/python-build-standalone" target="_blank" style="color: var(--accent3); text-decoration: underline;">python-build-standalone</a>) sin pedirte que tengas Python preinstalado.</p>
+
+      <pre class="shell"><code>uv python install 3.12         # instala Python 3.12
+uv python install 3.11 3.12 3.13   # varias a la vez
+uv python list                  # ver versiones instaladas y disponibles
+uv python find                  # encuentra Pythons en tu PATH</code></pre>
+
+      <p>En la analogía: si los paquetes son los materiales, <strong>Python es la maquinaria base</strong> de la obra. Algunas obras requieren un equipamiento más antiguo (Python 3.10), otras uno más moderno (3.13). uv te trae el modelo correcto.</p>
+
+      <h3>Pinear la versión: <code>.python-version</code></h3>
+      <p>Cuando creas un proyecto con <code>uv init</code>, se genera un archivo oculto:</p>
+
+      <pre class="file" data-file=".python-version"><code>3.12</code></pre>
+
+      <p>Este archivo le dice a uv qué versión de Python usar para este proyecto. Si la versión no está instalada, uv la descarga automáticamente la primera vez que ejecutas <code>uv sync</code> o <code>uv run</code>.</p>
+
+      <pre class="shell"><code>uv python pin 3.13              # cambiar el pin del proyecto</code></pre>
+
+      <div class="callout">
+        <strong>Diferencia con pyenv:</strong> <code>pyenv</code> compila Python desde código fuente (lento y necesita librerías del sistema). <code>uv</code> descarga binarios precompilados — segundos en vez de minutos.
+      </div>
+
+      <h3>El entorno virtual <code>.venv/</code></h3>
+      <p>uv crea automáticamente un venv en <code>.venv/</code> dentro de tu proyecto. <strong>No necesitas crearlo ni activarlo manualmente</strong>, pero si quieres puedes:</p>
+
+      <pre class="shell"><code># Crear un venv manualmente (raro, uv lo hace solo)
+uv venv                          # crea .venv con la versión pineada
+uv venv --python 3.11            # crea con una versión específica
+
+# Activarlo manualmente (sólo si lo necesitas)
+source .venv/bin/activate        # macOS/Linux
+.venv\Scripts\activate           # Windows</code></pre>
+
+      <div class="callout tip">
+        <strong>Filosofía recomendada:</strong> trabaja con <code>uv run</code>/<code>uv sync</code> y olvídate del venv. Pero si tu IDE necesita una ruta de Python (PyCharm, VS Code), apúntalo a <code>.venv/bin/python</code>.
+      </div>
+
+      <h3>Tabla: equivalencias con pyenv + virtualenv</h3>
+      <table>
+        <thead><tr><th>Tarea</th><th>Antes</th><th>Con uv</th></tr></thead>
+        <tbody>
+          <tr><td>Instalar Python 3.12</td><td><code>pyenv install 3.12</code></td><td><code>uv python install 3.12</code></td></tr>
+          <tr><td>Pinear versión al proyecto</td><td><code>pyenv local 3.12</code></td><td><code>uv python pin 3.12</code></td></tr>
+          <tr><td>Crear venv</td><td><code>python -m venv .venv</code></td><td><code>uv venv</code> (o automático)</td></tr>
+          <tr><td>Activar venv</td><td><code>source .venv/bin/activate</code></td><td>No necesario con <code>uv run</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="checkpoint">
+        <div class="checkpoint-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Qué deberías poder hacer ahora
+        </div>
+        <ul>
+          <li>Instalar versiones de Python con uv (sin compilar)</li>
+          <li>Pinear una versión específica al proyecto</li>
+          <li>Entender por qué normalmente no necesitas activar el venv</li>
+          <li>Configurar tu IDE para apuntar al <code>.venv/bin/python</code></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ─── MÓDULO 4 ─── -->
+    <article class="module" id="m4">
+      <div class="module-meta">
+        <span class="module-num">Módulo 04</span>
+        <span class="module-level lv-medium">Medio</span>
+      </div>
+      <h2>pyproject.toml &amp; uv.lock</h2>
+      <p class="lead">Los dos archivos que rigen tu proyecto. Entender la diferencia entre ambos es la diferencia entre "instalar paquetes" y "tener proyectos reproducibles".</p>
+
+      <h3>pyproject.toml — las especificaciones</h3>
+      <p>Es el archivo estándar de la comunidad Python (PEP 518/621) para describir un proyecto. uv añade una sección propia <code>[tool.uv]</code> para configuración específica.</p>
+
+      <pre class="file" data-file="pyproject.toml"><code>[project]
+name = "mi-app"
+version = "0.1.0"
+description = "API de recomendación con FastAPI"
+requires-python = "&gt;=3.12"
+dependencies = [
+    "fastapi&gt;=0.110",
+    "pydantic&gt;=2.5",
+    "httpx",
+]
+
+[dependency-groups]
+dev = [
+    "pytest&gt;=8",
+    "ruff",
+    "mypy",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+]
+
+[tool.uv]
+# Permite versiones pre-release para algunos paquetes
+prerelease = "allow"</code></pre>
+
+      <p>Las claves importantes:</p>
+      <ul>
+        <li><code>requires-python</code>: rango aceptado de Python.</li>
+        <li><code>dependencies</code>: lo que tu proyecto necesita siempre.</li>
+        <li><code>[dependency-groups]</code>: grupos opcionales (dev, docs, etc.).</li>
+      </ul>
+
+      <h4>Manipular grupos desde la CLI</h4>
+      <pre class="shell"><code>uv add --dev pytest               # al grupo "dev"
+uv add --group docs mkdocs        # al grupo "docs"
+uv sync --group docs              # instalar el grupo docs
+uv sync --no-dev                  # sincronizar SIN dependencias dev</code></pre>
+
+      <h3>uv.lock — la orden de compra detallada</h3>
+      <p>El lockfile registra <strong>las versiones exactas resueltas para CADA paquete y sub-paquete</strong>, junto con sus hashes criptográficos. Es lo que garantiza que tu compañero, tu CI y producción instalen <em>exactamente</em> lo mismo que tú.</p>
+
+      <pre class="file" data-file="uv.lock (extracto)"><code>version = 1
+requires-python = "&gt;=3.12"
+
+[[package]]
+name = "fastapi"
+version = "0.110.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "starlette" },
+]
+sdist = { url = "...", hash = "sha256:abc..." }
+wheels = [
+    { url = "...", hash = "sha256:def..." },
+]</code></pre>
+
+      <div class="callout">
+        <strong>Regla de oro:</strong> <code>uv.lock</code> SIEMPRE va al control de versiones (<code>git add uv.lock</code>). Es la única forma de garantizar reproducibilidad entre máquinas y entre commits.
+      </div>
+
+      <h3>El ciclo: especificaciones → lockfile → entorno</h3>
+      <pre class="shell"><code>1. Editas pyproject.toml (o usas uv add)
+2. uv lock         → genera/actualiza uv.lock con versiones exactas
+3. uv sync         → instala uv.lock en .venv
+
+# Para colaborar:
+4. git push (con pyproject.toml + uv.lock)
+5. Tu compañero: git pull + uv sync</code></pre>
+
+      <h3>Modos de instalación</h3>
+      <table>
+        <thead><tr><th>Comando</th><th>Comportamiento</th></tr></thead>
+        <tbody>
+          <tr><td><code>uv sync</code></td><td>Sincroniza venv con lockfile, regenera lock si pyproject cambió</td></tr>
+          <tr><td><code>uv sync --frozen</code></td><td>Falla si el lockfile no está sincronizado con pyproject (ideal en CI)</td></tr>
+          <tr><td><code>uv sync --locked</code></td><td>Falla si necesita tocar el lockfile</td></tr>
+          <tr><td><code>uv sync --no-install-project</code></td><td>Solo dependencias, no instala tu proyecto</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <strong>Tip para CI:</strong> en producción y CI, usa <code>uv sync --frozen</code>. Si alguien hace push de un <code>pyproject.toml</code> sin actualizar el lockfile, el build falla y lo descubres antes de desplegar.
+      </div>
+
+      <h3>Inspeccionar el lockfile</h3>
+      <pre class="shell"><code>uv tree                          # árbol legible
+uv export --format requirements-txt &gt; requirements.txt  # exportar para legacy</code></pre>
+
+      <div class="checkpoint">
+        <div class="checkpoint-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Qué deberías poder hacer ahora
+        </div>
+        <ul>
+          <li>Distinguir el rol de <code>pyproject.toml</code> y <code>uv.lock</code></li>
+          <li>Definir y manejar grupos de dependencias (dev, docs, etc.)</li>
+          <li>Entender por qué <code>uv.lock</code> debe ir al repo</li>
+          <li>Usar <code>uv sync --frozen</code> en CI para detectar lockfiles desactualizados</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- ═══════════ NIVEL EXPERTO ══════════════ -->
+    <!-- ═══════════════════════════════════════ -->
+    <div class="level-divider" id="nivel-experto">
+      <span class="level-divider-badge expert"><span class="pill"></span>Nivel Experto</span>
+      <span class="level-divider-text">uv en producción: reemplazar todo el ecosistema y montar workflows profesionales.</span>
+    </div>
+
+    <!-- ─── MÓDULO 5 ─── -->
+    <article class="module" id="m5">
+      <div class="module-meta">
+        <span class="module-num">Módulo 05</span>
+        <span class="module-level lv-expert">Experto</span>
+      </div>
+      <h2>uv en producción</h2>
+      <p class="lead">El módulo experto en dos partes. Primero, cómo uv reemplaza a todo el ecosistema tradicional (pip, pipx, pyenv, virtualenv, poetry). Después, los workflows que separan al que usa uv de juguete del que lo lleva a producción: scripts inline, workspaces, build &amp; publish, CI/CD y Docker.</p>
+
+      <!-- ═══ PARTE A · REEMPLAZOS DEL ECOSISTEMA ═══ -->
+      <h3 style="color: var(--expert); border-bottom: 1px solid rgba(188,140,255,0.3); padding-bottom: 8px; margin-top: 8px;">Parte A · Reemplazos del ecosistema</h3>
+      <p>uv no es "otra herramienta más" — es UN binario que reemplaza a seis. Aquí está la tabla maestra de equivalencias y cómo migrar.</p>
+
+      <h3>Tabla maestra de reemplazos</h3>
+      <table>
+        <thead><tr><th>Herramienta tradicional</th><th>Equivalente en uv</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td><code>pip install X</code></td><td><code>uv pip install X</code> o <code>uv add X</code></td><td>Compatible 100%</td></tr>
+          <tr><td><code>pip-compile</code></td><td><code>uv pip compile</code></td><td>Mucho más rápido</td></tr>
+          <tr><td><code>virtualenv</code></td><td><code>uv venv</code></td><td>Drop-in replacement</td></tr>
+          <tr><td><code>pyenv</code></td><td><code>uv python install</code></td><td>Binarios, no compila</td></tr>
+          <tr><td><code>pipx</code></td><td><code>uv tool install</code></td><td>Para CLIs globales</td></tr>
+          <tr><td><code>poetry</code></td><td><code>uv add</code> + <code>uv sync</code></td><td>Mismo workflow, más rápido</td></tr>
+        </tbody>
+      </table>
+
+      <h3>uv pip — modo drop-in</h3>
+      <p>Si tienes scripts o documentación que asume <code>pip</code>, <code>uv pip</code> es 100% compatible:</p>
+
+      <pre class="shell"><code>uv pip install requests
+uv pip install -r requirements.txt
+uv pip uninstall requests
+uv pip list
+uv pip freeze
+uv pip compile requirements.in -o requirements.txt</code></pre>
+
+      <div class="callout warn">
+        <strong>Importante:</strong> <code>uv pip</code> NO usa <code>pyproject.toml</code> ni <code>uv.lock</code>. Es solo un wrapper compatible con pip. Para proyectos modernos usa <code>uv add</code>/<code>uv sync</code>.
+      </div>
+
+      <h3>uv tool — reemplazo de pipx</h3>
+      <p>Para instalar herramientas CLI globales (ruff, black, httpie, posit) en su propio entorno aislado:</p>
+
+      <pre class="shell"><code>uv tool install ruff             # instalar
+uv tool install black mypy        # varias a la vez
+uv tool list                      # listar instaladas
+uv tool upgrade ruff              # actualizar
+uv tool uninstall ruff            # desinstalar
+uv tool run ruff check .          # ejecutar sin instalar (= uvx)</code></pre>
+
+      <p>El alias <code>uvx</code> es equivalente a <code>uv tool run</code>:</p>
+      <pre class="shell"><code>uvx ruff check .                 # ruff sin instalar nada
+uvx --from httpie http httpbin.org/json  # con paquete distinto al binario</code></pre>
+
+      <div class="callout tip">
+        <strong>Tip:</strong> <code>uvx</code> es perfecto para correr una herramienta de una sola vez. Cero instalación, cero contaminación.
+      </div>
+
+      <h3>Migrar desde requirements.txt</h3>
+      <p>Si tienes un proyecto viejo con <code>requirements.txt</code>:</p>
+
+      <pre class="shell"><code># 1. Inicializa uv en el proyecto
+uv init --no-readme
+
+# 2. Importa las dependencias del requirements
+uv add -r requirements.txt
+
+# 3. Genera el lockfile
+uv lock
+
+# 4. Verifica
+uv sync</code></pre>
+
+      <h3>Migrar desde Poetry</h3>
+      <p>uv y poetry usan el mismo formato base (<code>pyproject.toml</code>). Los pasos:</p>
+
+      <ol>
+        <li>Renombra el bloque <code>[tool.poetry]</code> a <code>[project]</code> y ajusta el formato de dependencias.</li>
+        <li>Convierte <code>{ version = "^X" }</code> a <code>"&gt;=X,&lt;Y+1"</code>.</li>
+        <li>Borra <code>poetry.lock</code> y ejecuta <code>uv lock</code>.</li>
+        <li>Reemplaza <code>poetry install</code> por <code>uv sync</code> y <code>poetry run</code> por <code>uv run</code>.</li>
+      </ol>
+
+      <div class="callout">
+        <strong>Bonus:</strong> existen herramientas como <a href="https://github.com/mkniewallner/migrate-to-uv" target="_blank" style="color: var(--accent3); text-decoration: underline;">migrate-to-uv</a> que automatizan la conversión desde Poetry, Pipenv o Hatch.
+      </div>
+
+      <h3>Compatibilidad con ecosistemas existentes</h3>
+      <ul>
+        <li><strong>PyPI:</strong> uv usa PyPI como índice por defecto. Mismas wheels, mismos sdists.</li>
+        <li><strong>Índices privados:</strong> configurables vía <code>--index-url</code>, <code>--extra-index-url</code> o en <code>[tool.uv]</code>.</li>
+        <li><strong>requirements.txt:</strong> uv puede leerlos (<code>uv pip install -r</code>) y exportarlos (<code>uv export</code>).</li>
+        <li><strong>setup.py / setup.cfg:</strong> uv los entiende para instalación, pero recomienda migrar a <code>pyproject.toml</code>.</li>
+      </ul>
+
+      <!-- ═══ PARTE B · WORKFLOWS AVANZADOS ═══ -->
+      <h3 style="color: var(--expert); border-bottom: 1px solid rgba(188,140,255,0.3); padding-bottom: 8px; margin-top: 56px;">Parte B · Workflows avanzados</h3>
+      <p>Lo que separa a quien usa uv de juguete de quien lo lleva a producción: scripts inline, workspaces para mono-repos, build &amp; publish, integración con CI/CD y Docker multi-stage.</p>
+
+      <!-- ── B.1 INLINE SCRIPT METADATA ── -->
+      <div class="practical-block">
+        <h3>B.1 · Scripts auto-contenidos (inline metadata, PEP 723)</h3>
+        <p>Esta es una de las features más mágicas de uv. Puedes declarar las dependencias directamente <strong>dentro</strong> de un script de Python, en un comentario especial. uv crea un venv efímero, instala lo necesario y ejecuta — todo automático.</p>
+
+        <pre class="file" data-file="analizar.py"><code># /// script
+# requires-python = "&gt;=3.12"
+# dependencies = [
+#     "httpx",
+#     "rich",
+# ]
+# ///
+import httpx
+from rich import print
+
+resp = httpx.get("https://api.github.com/repos/astral-sh/uv")
+print(resp.json()["stargazers_count"])</code></pre>
+
+        <p>Lo ejecutas con:</p>
+        <pre class="shell"><code>uv run analizar.py</code></pre>
+
+        <p>uv lee el comentario, prepara el entorno (con caché para futuras ejecuciones) y lanza el script. <strong>Sin venvs visibles, sin pyproject.toml, sin instalar nada globalmente.</strong></p>
+
+        <div class="callout tip">
+          <strong>Casos de uso:</strong> scripts de utilidad, análisis ad-hoc, gists compartibles, automatización en bash que necesita una librería puntual. Es la respuesta de Python a <code>npx</code>.
+        </div>
+
+        <h4>Crear scripts inline rápidamente</h4>
+        <pre class="shell"><code>uv init --script mi_script.py    # crea uno con la cabecera lista
+uv add --script mi_script.py httpx rich   # añade deps al script</code></pre>
+      </div>
+
+      <!-- ── 7.2 WORKSPACES ── -->
+      <div class="practical-block">
+        <h3>B.2 · Workspaces (mono-repos)</h3>
+        <p>Un workspace permite tener varios proyectos Python en un mismo repo, con un único <code>uv.lock</code> compartido. Ideal para mono-repos con backend + librerías internas + cli, etc.</p>
+
+        <pre class="file" data-file="mi-mono-repo/"><code>mi-mono-repo/
+├── pyproject.toml          # workspace root
+├── uv.lock                 # único, compartido
+├── packages/
+│   ├── core/
+│   │   └── pyproject.toml  # paquete miembro
+│   ├── api/
+│   │   └── pyproject.toml
+│   └── cli/
+│       └── pyproject.toml</code></pre>
+
+        <p>El <code>pyproject.toml</code> de la raíz declara los miembros:</p>
+
+        <pre class="file" data-file="pyproject.toml (root)"><code>[project]
+name = "mi-mono-repo"
+version = "0"
+requires-python = "&gt;=3.12"
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+mi-core = { workspace = true }      # api y cli usan core local</code></pre>
+
+        <p>Y desde <code>packages/api/pyproject.toml</code> declaras <code>mi-core</code> como dependencia normal — uv resolverá que viene del workspace local, no de PyPI.</p>
+
+        <pre class="shell"><code>uv sync                    # instala TODO el workspace
+uv run --package api ...   # ejecutar dentro de un miembro específico</code></pre>
+      </div>
+
+      <!-- ── 7.3 BUILD & PUBLISH ── -->
+      <div class="practical-block">
+        <h3>B.3 · Build &amp; publish a PyPI</h3>
+        <p>uv puede empaquetar y publicar tu proyecto sin necesidad de <code>twine</code> o <code>build</code>:</p>
+
+        <pre class="shell"><code>uv build                          # genera dist/ con .whl y .tar.gz
+uv build --sdist                  # solo source distribution
+uv build --wheel                  # solo wheel
+
+# Publicar a PyPI
+uv publish                         # usa credenciales del .pypirc / env
+uv publish --token pypi-XXX        # con token explícito
+uv publish --publish-url https://test.pypi.org/legacy/   # a TestPyPI</code></pre>
+
+        <div class="callout tip">
+          <strong>Tip:</strong> usa <a href="https://docs.pypi.org/trusted-publishers/" target="_blank" style="color: var(--accent3); text-decoration: underline;">trusted publishers</a> de PyPI con GitHub Actions: cero credenciales, autenticación OIDC.
+        </div>
+      </div>
+
+      <!-- ── 7.4 CI/CD ── -->
+      <div class="practical-block">
+        <h3>B.4 · uv en GitHub Actions</h3>
+        <p>Astral mantiene una action oficial. La configuración mínima para un proyecto típico:</p>
+
+        <pre class="file" data-file=".github/workflows/ci.yml"><code>name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --frozen --all-extras --dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Test
+        run: uv run pytest</code></pre>
+
+        <p>Puntos clave:</p>
+        <ul>
+          <li><code>enable-cache: true</code> — la action cachea el directorio global de uv. La segunda corrida es casi instantánea.</li>
+          <li><code>uv sync --frozen</code> — falla si <code>uv.lock</code> está desactualizado.</li>
+          <li><code>uv python install</code> — uv descarga la versión exacta de Python; no dependes de <code>actions/setup-python</code>.</li>
+        </ul>
+      </div>
+
+      <!-- ── 7.5 CACHE & CONFIG ── -->
+      <div class="practical-block">
+        <h3>B.5 · Caché y configuración global</h3>
+        <p>uv cachea agresivamente. Saber dónde y cómo manejarlo te ayuda en CI y al diagnosticar problemas.</p>
+
+        <h4>Ubicación del caché</h4>
+        <ul>
+          <li><strong>Linux/macOS:</strong> <code>~/.cache/uv/</code></li>
+          <li><strong>Windows:</strong> <code>%LOCALAPPDATA%\uv\cache\</code></li>
+        </ul>
+
+        <pre class="shell"><code>uv cache dir                     # ver dónde está
+uv cache clean                   # limpiar todo
+uv cache prune                   # eliminar entradas obsoletas (recomendado)</code></pre>
+
+        <h4>Configuración persistente</h4>
+        <p>Puedes definir defaults en un archivo TOML global (<code>~/.config/uv/uv.toml</code> en Linux/macOS) o por proyecto en la sección <code>[tool.uv]</code> de <code>pyproject.toml</code>:</p>
+
+        <pre class="file" data-file="~/.config/uv/uv.toml"><code>[pip]
+index-url = "https://mi-empresa.com/pypi/simple"
+extra-index-url = ["https://pypi.org/simple"]
+
+# Por defecto compila bytecode (.pyc) al instalar — startup más rápido
+compile-bytecode = true
+
+# Resolver más estricto
+resolution = "highest"</code></pre>
+
+        <h4>Variables de entorno útiles</h4>
+        <table>
+          <thead><tr><th>Variable</th><th>Para qué</th></tr></thead>
+          <tbody>
+            <tr><td><code>UV_CACHE_DIR</code></td><td>Cambiar la ubicación del caché</td></tr>
+            <tr><td><code>UV_INDEX_URL</code></td><td>Índice de paquetes por defecto</td></tr>
+            <tr><td><code>UV_PYTHON</code></td><td>Versión de Python por defecto</td></tr>
+            <tr><td><code>UV_NO_SYNC</code></td><td>Desactiva el auto-sync de <code>uv run</code></td></tr>
+            <tr><td><code>UV_OFFLINE</code></td><td>No hace red — sólo usa caché</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout warn">
+          <strong>Cuidado:</strong> <code>uv cache clean</code> borra todo y la siguiente instalación tardará mucho. Para mantenimiento periódico usa <code>uv cache prune</code>: solo elimina entradas que ya no apuntan a paquetes vivos.
+        </div>
+      </div>
+
+      <!-- ── 7.6 DOCKER ── -->
+      <div class="practical-block">
+        <h3>B.6 · uv en Docker (multi-stage build)</h3>
+        <p>El patrón recomendado: usar la imagen oficial de uv como builder y copiar el venv resultante a una imagen final mínima.</p>
+
+        <pre class="file" data-file="Dockerfile"><code># ─── Stage 1: builder ─────────────────────────────
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/app/.venv
+
+WORKDIR /app
+
+# Instala deps SIN copiar el código todavía (mejor caching)
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project --no-dev
+
+# Ahora copia el código y haz install final
+COPY . .
+RUN uv sync --frozen --no-dev
+
+# ─── Stage 2: runtime ─────────────────────────────
+FROM python:3.12-slim-bookworm
+
+WORKDIR /app
+COPY --from=builder /app /app
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+CMD ["python", "-m", "mi_app"]</code></pre>
+
+        <p>Por qué este patrón funciona bien:</p>
+        <ul>
+          <li>El <code>RUN uv sync</code> de las deps se cachea: solo se reinstala si <code>pyproject.toml</code>/<code>uv.lock</code> cambian.</li>
+          <li>La imagen final no incluye uv ni el caché — es ligera.</li>
+          <li><code>UV_COMPILE_BYTECODE=1</code> mejora el startup en producción.</li>
+        </ul>
+      </div>
+
+      <div class="checkpoint">
+        <div class="checkpoint-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+          Qué deberías poder hacer ahora
+        </div>
+        <ul>
+          <li><strong>Parte A:</strong> saber qué herramienta tradicional reemplaza cada subcomando de uv</li>
+          <li><strong>Parte A:</strong> usar <code>uv pip</code> para mantener compatibilidad con scripts viejos</li>
+          <li><strong>Parte A:</strong> instalar y ejecutar herramientas globales con <code>uv tool</code> y <code>uvx</code></li>
+          <li><strong>Parte A:</strong> migrar un proyecto desde requirements.txt o Poetry</li>
+          <li><strong>Parte B:</strong> crear scripts auto-contenidos con metadata inline (PEP 723)</li>
+          <li><strong>Parte B:</strong> estructurar un mono-repo como un workspace de uv</li>
+          <li><strong>Parte B:</strong> construir y publicar paquetes con <code>uv build</code> + <code>uv publish</code></li>
+          <li><strong>Parte B:</strong> configurar GitHub Actions con caché y matrix de Python</li>
+          <li><strong>Parte B:</strong> escribir un Dockerfile multi-stage usando la imagen oficial de uv</li>
+          <li><strong>Parte B:</strong> manejar el caché y la configuración global cuando algo falla</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- ─── FINAL CTA ─── -->
+    <section class="final-cta">
+      <h2>¿Listo para evaluarte?</h2>
+      <p>Pon a prueba lo aprendido con el cuestionario maestro de 20 preguntas. Cubre los conceptos esenciales de los 5 módulos.</p>
+      <a href="uv-quiz.html" class="btn-quiz">
+        Comenzar Quiz
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Sidebar active link tracking
+  const links = document.querySelectorAll('.sb-link');
+  const modules = document.querySelectorAll('.module');
+
+  function updateActiveLink() {
+    let current = '';
+    const scrollPos = window.scrollY + 120;
+
+    modules.forEach(mod => {
+      if (scrollPos >= mod.offsetTop) {
+        current = mod.id;
+      }
+    });
+
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink);
+  updateActiveLink();
+
+  // Smooth scroll para todos los enlaces internos (sidebar + TOC)
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const href = link.getAttribute('href');
+      if (href === '#' || href.length < 2) return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
