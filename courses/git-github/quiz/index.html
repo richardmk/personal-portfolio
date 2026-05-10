@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>uv — Cuestionario (carátula)</title>
+<title>Git & GitHub — Cuestionario (carátula)</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -75,10 +75,10 @@
     font-weight: 700;
     font-size: 0.95rem;
   }
-  .tb-title .uv { color: var(--accent); }
-  .tb-title .py { color: var(--accent2); }
+  .tb-title .git { color: var(--accent); }
+  .tb-title .hub { color: var(--accent2); }
 
-  /* ── INTRO SCREEN ── */
+  /* ── INTRO ── */
   #intro {
     position: relative;
     z-index: 1;
@@ -118,8 +118,8 @@
     letter-spacing: -1.5px;
     animation: fadeDown 0.7s 0.1s ease both;
   }
-  h1.hero span.uv { color: var(--accent); }
-  h1.hero span.py { color: var(--accent2); }
+  h1.hero span.git { color: var(--accent); }
+  h1.hero span.hub { color: var(--accent2); }
 
   .hero-sub {
     margin-top: 16px;
@@ -164,10 +164,7 @@
     position: relative;
   }
 
-  .level-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent2);
-  }
+  .level-card:hover { transform: translateY(-3px); border-color: var(--accent2); }
 
   .level-card .lc-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
   .level-card .lc-count { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--accent2); margin-bottom: 4px; }
@@ -257,8 +254,8 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Volver al curso
   </a>
-  <div class="tb-title"><span class="uv">uv</span> · <span class="py">Python</span> · Quiz</div>
-  <a href="../../../aprendizaje/" class="tb-link">
+  <div class="tb-title"><span class="git">Git</span> &amp; <span class="hub">GitHub</span> · Quiz</div>
+  <a href="../../../learning/" class="tb-link">
     Centro de Aprendizaje
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
   </a>
@@ -268,32 +265,32 @@
 <div id="intro">
   <div class="terminal-badge">
     <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-    &nbsp;uv-quiz --interactive --questions=20
+    &nbsp;git-quiz --interactive
   </div>
-  <h1 class="hero"><span class="uv">uv</span> · <span class="py">Python</span><br>Cuestionario Maestro</h1>
-  <p class="hero-sub">Pon a prueba lo aprendido en los 5 módulos del curso de uv. Tres niveles: lo básico para empezar, lo intermedio para entender el modelo y lo experto para llevarlo a producción.</p>
+  <h1 class="hero"><span class="git">Git</span> &amp; <span class="hub">GitHub</span><br>Cuestionario Maestro</h1>
+  <p class="hero-sub">Pon a prueba lo aprendido en los 7 módulos del curso. Tres niveles: lo básico para usar Git, lo intermedio para colaborar y lo experto para destacar.</p>
 
   <div class="level-section-label">Selecciona tu nivel</div>
   <div class="level-cards">
     <button class="level-card lv-card-all active" data-filter="all" onclick="setFilter('all')">
       <div class="lc-name">Todos</div>
-      <div class="lc-count">20 preguntas</div>
+      <div class="lc-count">50 preguntas</div>
       <div class="lc-desc">Todos los niveles</div>
     </button>
     <button class="level-card lv-card-easy" data-filter="easy" onclick="setFilter('easy')">
       <div class="lc-name">Fácil</div>
-      <div class="lc-count">8 preguntas</div>
-      <div class="lc-desc">Módulos 1–2</div>
+      <div class="lc-count">16 preguntas</div>
+      <div class="lc-desc">Módulos 1–3</div>
     </button>
     <button class="level-card lv-card-medium" data-filter="medium" onclick="setFilter('medium')">
       <div class="lc-name">Medio</div>
-      <div class="lc-count">6 preguntas</div>
-      <div class="lc-desc">Módulos 3–4</div>
+      <div class="lc-count">15 preguntas</div>
+      <div class="lc-desc">Módulos 4–5</div>
     </button>
     <button class="level-card lv-card-expert" data-filter="expert" onclick="setFilter('expert')">
       <div class="lc-name">Experto</div>
-      <div class="lc-count">6 preguntas</div>
-      <div class="lc-desc">Módulo 5</div>
+      <div class="lc-count">19 preguntas</div>
+      <div class="lc-desc">Módulos 6–7</div>
     </button>
   </div>
 
@@ -301,7 +298,7 @@
     Comenzar con <span id="start-label">Todos</span> →
   </button>
   <div class="keyboard-hint">
-    💡 Atajos durante el quiz: <kbd>1</kbd>–<kbd>6</kbd> opción · <kbd>Enter</kbd> confirmar · <kbd>S</kbd> omitir
+    💡 Atajos durante el quiz: <kbd>1</kbd>–<kbd>5</kbd> opción · <kbd>Enter</kbd> confirmar · <kbd>S</kbd> omitir
   </div>
 </div>
 
@@ -311,8 +308,8 @@
   //  Guarda el filtro elegido en localStorage y
   //  navega a la página de preguntas.
   // ══════════════════════════════════════════════
-  const STORAGE_FILTER  = 'uvQuiz_filter';
-  const STORAGE_RESULTS = 'uvQuiz_results';
+  const STORAGE_FILTER  = 'gitQuiz_filter';
+  const STORAGE_RESULTS = 'gitQuiz_results';
   const LEVEL_LABELS    = { all:'Todos', easy:'Fácil', medium:'Medio', expert:'Experto' };
 
   let activeFilter = 'all';
@@ -330,10 +327,9 @@
 
   function startQuiz() {
     localStorage.setItem(STORAGE_FILTER, activeFilter);
-    window.location.href = 'preguntas.html';
+    window.location.href = 'questions.html';
   }
 
-  // Enter para iniciar
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); startQuiz(); }
   });

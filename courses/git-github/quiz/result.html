@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>uv — Cuestionario (resultado)</title>
+<title>Git & GitHub — Cuestionario (resultado)</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -75,8 +75,8 @@
     font-weight: 700;
     font-size: 0.95rem;
   }
-  .tb-title .uv { color: var(--accent); }
-  .tb-title .py { color: var(--accent2); }
+  .tb-title .git { color: var(--accent); }
+  .tb-title .hub { color: var(--accent2); }
 
   /* ── RESULTADOS ── */
   #results {
@@ -104,9 +104,7 @@
     color: var(--muted);
     margin-bottom: 28px;
   }
-  .result-summary-tag .lvl-pill {
-    width: 8px; height: 8px; border-radius: 50%;
-  }
+  .result-summary-tag .lvl-pill { width: 8px; height: 8px; border-radius: 50%; }
   .result-summary-tag.easy   .lvl-pill { background: var(--easy); }
   .result-summary-tag.medium .lvl-pill { background: var(--medium); }
   .result-summary-tag.expert .lvl-pill { background: var(--expert); }
@@ -176,12 +174,7 @@
   .bd-card .bd-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
   .bd-card .bd-val   { font-size: 1.5rem; font-weight: 700; }
 
-  .result-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+  .result-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
   .btn-restart {
     background: var(--accent);
@@ -239,8 +232,8 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Volver al curso
   </a>
-  <div class="tb-title"><span class="uv">uv</span> · <span class="py">Python</span> · Resultado</div>
-  <a href="../../../aprendizaje/" class="tb-link">
+  <div class="tb-title"><span class="git">Git</span> &amp; <span class="hub">GitHub</span> · Resultado</div>
+  <a href="../../../learning/" class="tb-link">
     Centro de Aprendizaje
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
   </a>
@@ -286,12 +279,10 @@
 <script>
 // ══════════════════════════════════════════════
 //  Página 3 de 3 — RESULTADO
-//  Lee los resultados desde localStorage y los muestra.
-//  Si no hay resultados, redirige a la carátula.
 // ══════════════════════════════════════════════
 
-const STORAGE_FILTER  = 'uvQuiz_filter';
-const STORAGE_RESULTS = 'uvQuiz_results';
+const STORAGE_FILTER  = 'gitQuiz_filter';
+const STORAGE_RESULTS = 'gitQuiz_results';
 
 const raw = localStorage.getItem(STORAGE_RESULTS);
 if (!raw) {
@@ -327,17 +318,14 @@ document.getElementById('ring-pct').style.color = ringColor;
 
 // Mensaje según porcentaje
 let title, msg;
-if (pct >= 90)      { title = '🏆 ¡Dominio completo!'; msg = 'Manejas uv a nivel experto: desde la analogía simple del primer módulo hasta workflows de CI/CD y Docker multi-stage.'; }
-else if (pct >= 75) { title = '🎯 ¡Muy buen nivel!'; msg = 'Tienes una base sólida. Refuerza el módulo 5 (uv en producción) para cerrar el círculo.'; }
-else if (pct >= 55) { title = '📈 ¡Buen progreso!'; msg = 'Vas por buen camino. Repasa los módulos de nivel medio (Python, lockfile) y experto.'; }
-else if (pct >= 35) { title = '📚 En construcción'; msg = 'Tienes los conceptos básicos. Dedica tiempo a entender pyproject.toml + uv.lock y los reemplazos de pip/pipx.'; }
-else                { title = '🌱 Empezando el camino'; msg = '¡Todos comenzamos aquí! Repasa los módulos del nivel fácil — la analogía de la construcción ayuda mucho — y vuelve a intentarlo.'; }
+if (pct >= 90)      { title = '🏆 ¡Dominio completo!'; msg = 'Manejas Git y GitHub a nivel experto: desde el ciclo básico hasta SSH, plantillas y READMEs profesionales.'; }
+else if (pct >= 75) { title = '🎯 ¡Muy buen nivel!'; msg = 'Tienes una base sólida. Refuerza el módulo 7 (temas adicionales) para cerrar el círculo.'; }
+else if (pct >= 55) { title = '📈 ¡Buen progreso!'; msg = 'Vas por buen camino. Repasa los módulos de nivel medio (merge, rebase, GitHub workflow) y experto.'; }
+else if (pct >= 35) { title = '📚 En construcción'; msg = 'Tienes los conceptos básicos. Dedica tiempo a practicar rebase, resolución de conflictos y pull requests.'; }
+else                { title = '🌱 Empezando el camino'; msg = '¡Todos comenzamos aquí! Repasa los módulos del nivel fácil y vuelve a intentarlo.'; }
 
 document.getElementById('result-title').textContent = title;
 document.getElementById('result-msg').textContent   = msg;
-
-// Limpiar resultados al salir (la próxima visita a la carátula también los limpia)
-// No los borramos aquí para permitir refrescar la página y seguir viéndolos.
 </script>
 </body>
 </html>
