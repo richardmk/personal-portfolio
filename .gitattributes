@@ -1,0 +1,15 @@
+# Normalizar finales de línea: LF en el repositorio, automático al hacer checkout
+* text=auto eol=lf
+
+# Archivos binarios (que git no debe tocar)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
