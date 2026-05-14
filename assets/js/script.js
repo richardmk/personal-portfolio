@@ -82,42 +82,94 @@ navTriggers.forEach(trigger => {
 });
 
 // ============================================
-// Formulario de contacto
+// Toasts (notificaciones)
 // ============================================
+const toastContainer = document.getElementById('toastContainer');
+
+const ICONS = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+};
+
+const showToast = (type, title, message, duration = 4500) => {
+    if (!toastContainer) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    toast.innerHTML = `
+        <div class="toast-icon">${ICONS[type] || ''}</div>
+        <div class="toast-body">
+            <div class="toast-title">${title}</div>
+            ${message ? `<div class="toast-message">${message}</div>` : ''}
+        </div>
+        <button class="toast-close" aria-label="Cerrar notificación">${ICONS.close}</button>
+    `;
+
+    const dismiss = () => {
+        if (toast.classList.contains('toast-leaving')) return;
+        toast.classList.add('toast-leaving');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+
+    toast.querySelector('.toast-close').addEventListener('click', dismiss);
+    toastContainer.appendChild(toast);
+
+    if (duration > 0) setTimeout(dismiss, duration);
+};
+
+// ============================================
+// Formulario de contacto — POST a Google Apps Script
+// El script (en script.google.com) recibe los campos, valida el honeypot
+// y envía el email vía GmailApp.sendEmail desde la cuenta del owner.
+// ============================================
+const CONTACT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwVkf2jQtInY11hilKnHi_ODloMG2NmBJ6wA6VGz_uDDwpM5DPHTPl3_nZuZONrOFVj/exec';
+
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-
-        const mailtoLink = `mailto:richard.mejia.k@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Nombre: ${name}\nEmail: ${email}\n\n${message}`)}`;
-        window.location.href = mailtoLink;
 
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalHTML = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span>✓ Mensaje preparado</span>';
-        submitBtn.style.opacity = '0.7';
 
-        setTimeout(() => {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.innerHTML = '<span>Enviando…</span>';
+
+        try {
+            // URLSearchParams produce un POST application/x-www-form-urlencoded,
+            // que es un "simple request" — evita el preflight CORS al endpoint de Apps Script.
+            const body = new URLSearchParams(new FormData(contactForm));
+            const res = await fetch(CONTACT_ENDPOINT, { method: 'POST', body });
+            const data = await res.json();
+
+            if (!data.ok) throw new Error(data.error || 'Respuesta no OK del servidor');
+
+            contactForm.reset();
+            showToast('success', 'Mensaje enviado', 'Gracias por escribir. Te respondo pronto.');
+        } catch (err) {
+            console.error('[contact] Error al enviar:', err);
+            showToast('error', 'No se pudo enviar', 'Revisa tu conexión e intenta de nuevo.');
+        } finally {
             submitBtn.innerHTML = originalHTML;
             submitBtn.style.opacity = '1';
-            contactForm.reset();
-        }, 2500);
+            submitBtn.disabled = false;
+        }
     });
 }
 
 // ============================================
 // Inicialización desde hash en URL
+// (script.js se carga por loader.js DESPUÉS de inyectar los partials,
+//  por lo que window.load ya pudo haber disparado — ejecutamos directo)
 // ============================================
-window.addEventListener('load', () => {
+{
     const hash = window.location.hash.substring(1);
     if (hash && document.getElementById(hash)) {
         navigateToSection(hash);
     }
-});
+}
 
 // ============================================
 // Formatear data-level de skills con símbolo %
