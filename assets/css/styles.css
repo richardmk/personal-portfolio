@@ -1139,14 +1139,28 @@ body {
 }
 
 .service-tech-tags span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--primary-light);
-    background: var(--primary-soft);
-    border: 1px solid var(--border-accent);
-    padding: 0.2rem 0.55rem;
+    font-size: 0.72rem;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.6rem;
     border-radius: 4px;
     letter-spacing: 0.3px;
+}
+
+.service-tech-tags span img,
+.service-tech-tags span svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.service-tech-tags span svg.tag-icon-fallback {
+    opacity: 0.75;
 }
 
 /* ============================================
