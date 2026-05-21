@@ -29,6 +29,19 @@ closeBtn.addEventListener('click', closeSidebar);
 overlay.addEventListener('click', closeSidebar);
 
 // ============================================
+// Theme toggle (dark / light)
+// ============================================
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) { /* localStorage bloqueado */ }
+    });
+}
+
+// ============================================
 // Navegación entre secciones
 // ============================================
 const navigateToSection = (sectionId) => {

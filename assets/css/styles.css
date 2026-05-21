@@ -1,7 +1,8 @@
 /* ============================================
    VARIABLES Y RESET
    ============================================ */
-:root {
+:root,
+[data-theme="dark"] {
     /* Colores - Rojo más suave y elegante */
     --primary: #c53030;
     --primary-light: #e85d5d;
@@ -24,6 +25,11 @@
     --border-light: #3a3a45;
     --border-accent: rgba(197, 48, 48, 0.3);
 
+    /* Glass — tonos para chips/efectos translúcidos */
+    --glass-soft: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --sidebar-bg: rgba(19, 19, 26, 0.85);
+
     /* Espaciado y tamaños */
     --sidebar-width: 280px;
     --max-width: 1200px;
@@ -36,6 +42,73 @@
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', 'Courier New', monospace;
     --font-display: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+/* ============================================
+   MODO CLARO — Paleta cálida con contraste reforzado
+   ============================================ */
+[data-theme="light"] {
+    --primary: #a82323;
+    --primary-light: #c52a2a;
+    --primary-glow: rgba(168, 35, 35, 0.25);
+    --primary-soft: rgba(168, 35, 35, 0.08);
+
+    --bg-primary: #e8e5dc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #d8d4c8;
+    --bg-card: #ffffff;
+
+    --text-primary: #14141c;
+    --text-secondary: #3a3a48;
+    --text-muted: #6e6e7a;
+
+    --border: #cdc8bb;
+    --border-light: #bcb7a8;
+    --border-accent: rgba(168, 35, 35, 0.3);
+
+    --glass-soft: rgba(20, 20, 30, 0.05);
+    --glass-border: rgba(20, 20, 30, 0.12);
+    --sidebar-bg: rgba(252, 251, 247, 0.9);
+}
+
+/* Sombras de elevación para que las cards "floten" sobre el fondo en modo claro */
+[data-theme="light"] .service-card,
+[data-theme="light"] .timeline-content,
+[data-theme="light"] .project-card,
+[data-theme="light"] .contact-info-panel,
+[data-theme="light"] .contact-form,
+[data-theme="light"] .info-grid,
+[data-theme="light"] .skill-category {
+    box-shadow:
+        0 1px 3px rgba(20, 20, 30, 0.04),
+        0 4px 12px rgba(20, 20, 30, 0.06);
+}
+
+[data-theme="light"] .service-card:hover,
+[data-theme="light"] .project-card:hover,
+[data-theme="light"] .timeline-content:hover,
+[data-theme="light"] .learning-banner:hover {
+    box-shadow:
+        0 8px 24px rgba(20, 20, 30, 0.1),
+        0 4px 12px rgba(20, 20, 30, 0.06);
+}
+
+/* Transición suave al cambiar de tema */
+body,
+.sidebar,
+.section,
+.timeline-content,
+.service-card,
+.service-item,
+.project-card,
+.contact-info-panel,
+.contact-form,
+.skill-category,
+.info-grid,
+.about-image-frame,
+.theme-toggle,
+.service-tech-tags span {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 * {
@@ -211,7 +284,7 @@ body {
     top: 0;
     width: var(--sidebar-width);
     height: 100vh;
-    background-color: rgba(19, 19, 26, 0.85);
+    background-color: var(--sidebar-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-right: 1px solid var(--border);
@@ -396,6 +469,91 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+/* ============================================
+   THEME TOGGLE — botón flotante fijo (esquina superior derecha)
+   ============================================ */
+.theme-toggle {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 1001;
+    width: 44px;
+    height: 44px;
+    background: var(--sidebar-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    padding: 0;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    border-color: var(--primary);
+    color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--primary-glow);
+}
+
+.theme-toggle .theme-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"]  .theme-toggle .theme-icon-moon { display: none; }
+[data-theme="light"] .theme-toggle .theme-icon-sun  { display: none; }
+
+.theme-toggle:hover .theme-icon-sun  { transform: rotate(45deg); }
+.theme-toggle:hover .theme-icon-moon { transform: rotate(-15deg); }
+
+/* En móvil, desplazar a la izquierda del menu-toggle para no chocar */
+@media (max-width: 768px) {
+    .theme-toggle {
+        right: calc(1.25rem + 56px);
+    }
+}
+
+/* Ajustes específicos del modo claro para elementos con colores hardcodeados */
+[data-theme="light"] .hero-overlay {
+    background:
+        linear-gradient(90deg, var(--bg-primary) 0%, rgba(246, 245, 241, 0.78) 50%, rgba(246, 245, 241, 0.5) 100%),
+        linear-gradient(180deg, transparent 0%, var(--bg-primary) 100%);
+}
+
+[data-theme="light"] .hero-bg-img {
+    opacity: 0.22;
+    filter: grayscale(75%) contrast(1.05) brightness(0.85);
+}
+
+[data-theme="light"] .menu-toggle {
+    background: var(--sidebar-bg);
+}
+
+[data-theme="light"] .gradient-orb {
+    opacity: 0.12;
+    filter: blur(120px);
+}
+
+[data-theme="light"] .noise {
+    mix-blend-mode: multiply;
+    opacity: 0.05;
+}
+
+[data-theme="light"] .grid-bg {
+    opacity: 0.7;
+}
+
+[data-theme="light"] .aurora-bg {
+    opacity: 0.55;
 }
 
 .social-links {
@@ -1145,8 +1303,8 @@ body {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--glass-soft);
+    border: 1px solid var(--glass-border);
     padding: 0.25rem 0.6rem;
     border-radius: 4px;
     letter-spacing: 0.3px;
@@ -1599,6 +1757,25 @@ body {
     aspect-ratio: 16/10;
     overflow: hidden;
     background: var(--bg-tertiary);
+}
+
+.project-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 2;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-primary);
+    background: rgba(20, 20, 30, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.3rem 0.65rem;
+    border-radius: 4px;
 }
 
 .project-image {
