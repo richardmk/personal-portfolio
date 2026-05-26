@@ -872,7 +872,7 @@ body {
 }
 
 .hero-subtitle-big {
-    font-size: clamp(1.35rem, 3.2vw, 2.5rem);
+    font-size: clamp(1.23rem, 3.05vw, 2.38rem);
     font-weight: 500;
     color: var(--text-secondary);
     display: block;
@@ -880,7 +880,7 @@ body {
 }
 
 .hero-description {
-    font-size: 1.15rem;
+    font-size: 1.13rem;
     color: var(--text-secondary);
     margin-bottom: 1.25rem;
     line-height: 1.7;
@@ -2363,11 +2363,11 @@ a.contact-method:hover {
     }
 
     .hero-subtitle-big {
-        font-size: 1.5rem;
+        font-size: 1.38rem;
     }
 
     .hero-description {
-        font-size: 1rem;
+        font-size: 0.98rem;
     }
 
     .hero-stats {
@@ -2502,7 +2502,7 @@ a.contact-method:hover {
     }
 
     .hero-subtitle-big {
-        font-size: 1.25rem;
+        font-size: 1.13rem;
     }
 
     .section-title {
